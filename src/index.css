@@ -1,0 +1,209 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+/*button[aria-label]:hover:after {
+  content: attr(aria-label);
+  position: absolute;
+  font-size: .75rem;
+  font-weight: 300;
+  border-radius: 0.25rem;
+  background-color: #111;
+  padding: 0.5rem;
+  color: #fff;
+   transform: translate(-50%, -200%);
+}
+*/
+
+.black-tint::after {
+  z-index: 0;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.25);
+}
+
+.h025 {
+  height: 0.125rem;
+  /*opacity: .9;*/
+}
+
+.bottom-025 {
+  bottom: 0.25rem;
+}
+
+.pb025 {
+  padding-bottom: 0.125rem;
+}
+
+:active,
+:focus {
+  outline: 0 !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.hover-bright-blue:hover {
+  color: #0433ff;
+}
+
+.hover-b--moon-gray:hover {
+  border-color: #CCC;
+}
+
+/*.shadow-0 {
+  box-shadow: #EEE 0px 1px 2px 0px;
+}
+
+.shadow-0:hover {
+    box-shadow: #DDD 0px 1px 3px 0px;
+}*/
+
+.search::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #B5B5B5;
+}
+.search:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #B5B5B5;
+   opacity:  1;
+}
+.search::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #B5B5B5;
+   opacity:  1;
+}
+.search:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #B5B5B5;
+}
+.search::-ms-input-placeholder { /* Microsoft Edge */
+   color:    #B5B5B5;
+}
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:   #111;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #111;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #111;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #111;
+}
+::-ms-input-placeholder { /* Microsoft Edge */
+   color:    #111;
+}
+
+input:focus::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:   #777;
+}
+input:focus:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #777;
+   opacity:  1;
+}
+input:focus::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #777;
+   opacity:  1;
+}
+input:focus:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #777;
+}
+input:focus::-ms-input-placeholder { /* Microsoft Edge */
+   color:    #777;
+}
+
+.flex-grow {
+	flex-grow: 1;
+}
+
+.icon {
+	width: 3rem;
+	height: 3rem;
+}
+
+.post {
+	max-width: 36rem;
+}
+
+.block .pause {
+  display: none;
+}
+
+.block:hover .pause {
+  display: block;
+}
+
+.post button { outline: none; }
+
+.content .block:first-child {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.content .block:last-child {
+   padding-bottom: 0;
+   margin-bottom: 0;
+}
+
+input {
+	outline: none !important;
+}
+
+
+.red { color: #FF4136; }
+.green { color: #2ECC40; }
+.bright-blue {color: #0433ff;}
+.bg-bright-blue {background-color: #0433ff;}
+.html {
+  background-color: #FFF;
+}
+
+body {
+  background-color: #F5F5F6;
+}
+.bg-near-white {
+  background-color: #F5F5F6;
+}
+.star:active svg,
+.republish:active svg {
+  fill: #AAA;
+  border: none !important;
+}
+
+.star:hover svg { fill: #FFB700; }
+.star:focus svg { fill: #FFB700; }
+.republish:hover svg { fill: #19A974 !important; }
+.republish:focus svg { fill: #19A974; }
+/*
+.download { outline: none; }
+.download:hover svg { fill: #0433ff !important; }
+.download:focus svg { fill: #0433ff; }*/
+
+.b--light-blue-gray {
+
+}
+
+.not-allowed {
+	cursor: not-allowed;
+}
+
+.public-DraftEditorPlaceholder-root {
+	color: #CCC;
+}
+
+svg { display: block; }
+
+/* For draft-js */
+
+figure {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+}
