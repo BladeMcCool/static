@@ -1582,9 +1582,15 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
-boom@4.x.x, boom@^4.3.1:
+boom@4.x.x:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/boom/-/boom-4.3.1.tgz#4f8a3005cb4a7e3889f749030fd25b96e01d2e31"
+  dependencies:
+    hoek "4.x.x"
+
+boom@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/boom/-/boom-5.1.0.tgz#0308fa8e924cd6d42d9c3bf4883bdc98f0e71df8"
   dependencies:
     hoek "4.x.x"
 
@@ -3018,7 +3024,11 @@ deep-equal@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
 
-deep-extend@^0.4.1, deep-extend@~0.4.0:
+deep-extend@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.5.0.tgz#6ef4a09b05f98b0e358d6d93d4ca3caec6672803"
+
+deep-extend@~0.4.0:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.4.2.tgz#48b699c27e334bf89f10892be432f6e4c7d34a7f"
 
@@ -5801,31 +5811,31 @@ ipfs-repo@~0.13.1:
     multiaddr "^2.3.0"
     safe-buffer "^5.0.1"
 
-ipfs-unixfs-engine@~0.19.1:
-  version "0.19.1"
-  resolved "https://registry.yarnpkg.com/ipfs-unixfs-engine/-/ipfs-unixfs-engine-0.19.1.tgz#d7c2094f3ff5e0c83aef0e291139fb4bb7ec3f7c"
+ipfs-unixfs-engine@~0.19.2:
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/ipfs-unixfs-engine/-/ipfs-unixfs-engine-0.19.2.tgz#3a09124946ab32f2dbd626ab70b95074c25c919a"
   dependencies:
-    async "^2.1.5"
-    cids "^0.4.2"
-    deep-extend "^0.4.1"
+    async "^2.4.1"
+    cids "^0.5.0"
+    deep-extend "^0.5.0"
     ipfs-unixfs "^0.1.11"
     ipld-dag-pb "^0.11.0"
-    ipld-resolver "^0.11.0"
+    ipld-resolver "^0.11.1"
     is-ipfs "^0.3.0"
     left-pad "^1.1.3"
     lodash "^4.17.4"
     multihashes "^0.4.5"
     multihashing-async "^0.4.5"
     pull-batch "^1.0.0"
-    pull-block "^1.1.0"
+    pull-block "^1.2.0"
     pull-cat "^1.1.11"
     pull-pair "^1.1.0"
-    pull-paramap "^1.2.1"
+    pull-paramap "^1.2.2"
     pull-pause "0.0.1"
-    pull-pushable "^2.0.1"
-    pull-stream "^3.5.0"
+    pull-pushable "^2.1.1"
+    pull-stream "^3.6.0"
     pull-traverse "^1.0.3"
-    pull-write "^1.1.1"
+    pull-write "^1.1.2"
     sparse-array "^1.3.1"
 
 ipfs-unixfs@^0.1.11, ipfs-unixfs@~0.1.11:
@@ -5834,13 +5844,13 @@ ipfs-unixfs@^0.1.11, ipfs-unixfs@~0.1.11:
   dependencies:
     protocol-buffers "^3.2.1"
 
-ipfs@^0.24.0:
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/ipfs/-/ipfs-0.24.0.tgz#34add4172002e4ddf7def6aed8acd5447b714978"
+ipfs@^0.24.1:
+  version "0.24.1"
+  resolved "https://registry.yarnpkg.com/ipfs/-/ipfs-0.24.1.tgz#c91a89d0e051691c6d18824e577d72f6ada74aaa"
   dependencies:
     async "^2.4.1"
     bl "^1.2.1"
-    boom "^4.3.1"
+    boom "^5.1.0"
     cids "^0.5.0"
     debug "^2.6.8"
     fsm-event "^2.1.0"
@@ -5855,10 +5865,10 @@ ipfs@^0.24.0:
     ipfs-multipart "~0.1.0"
     ipfs-repo "~0.13.1"
     ipfs-unixfs "~0.1.11"
-    ipfs-unixfs-engine "~0.19.1"
+    ipfs-unixfs-engine "~0.19.2"
     ipld-resolver "~0.11.1"
     isstream "^0.1.2"
-    joi "^10.5.0"
+    joi "^10.5.1"
     libp2p-floodsub "~0.9.4"
     libp2p-ipfs-browser "~0.24.1"
     libp2p-ipfs-nodejs "~0.25.2"
@@ -6002,7 +6012,7 @@ ipld-eth-tx@^1.0.0:
     ethereumjs-tx "^1.2.5"
     multihashes "~0.3.3"
 
-ipld-resolver@^0.11.0, ipld-resolver@~0.11.1:
+ipld-resolver@^0.11.1, ipld-resolver@~0.11.1:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/ipld-resolver/-/ipld-resolver-0.11.1.tgz#db0a1928aeb5e628cff170b56fc88c25c854469a"
   dependencies:
@@ -6702,9 +6712,9 @@ jodid25519@^1.0.0:
   dependencies:
     jsbn "~0.1.0"
 
-joi@10.x.x, joi@^10.5.0:
-  version "10.5.0"
-  resolved "https://registry.yarnpkg.com/joi/-/joi-10.5.0.tgz#4e3172a199c993b36aabe5a987b00b1b541c3059"
+joi@10.x.x, joi@^10.5.1:
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-10.5.1.tgz#22c608d106c1f7fe18c6f1bf38a228fdf2daab7f"
   dependencies:
     hoek "4.x.x"
     isemail "2.x.x"
@@ -9682,7 +9692,7 @@ prop-types@15.5.8:
   dependencies:
     fbjs "^0.8.9"
 
-prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
   version "15.5.10"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -9747,7 +9757,7 @@ pull-batch@^1.0.0:
   dependencies:
     pull-through "^1.0.18"
 
-pull-block@^1.1.0:
+pull-block@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/pull-block/-/pull-block-1.2.0.tgz#e3947f0a83426e847ecececb0b9ba308b019b3e1"
   dependencies:
@@ -9822,7 +9832,7 @@ pull-pair@^1.1.0, pull-pair@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pull-pair/-/pull-pair-1.1.0.tgz#7ee427263fdf4da825397ac0a05e1ab4b74bd76d"
 
-pull-paramap@^1.2.1, pull-paramap@^1.2.2:
+pull-paramap@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/pull-paramap/-/pull-paramap-1.2.2.tgz#51a4193ce9c8d7215d95adad45e2bcdb8493b23a"
   dependencies:
@@ -9870,7 +9880,7 @@ pull-write-file@^0.2.1:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/pull-write-file/-/pull-write-file-0.2.4.tgz#437344aeb2189f65e678ed1af37f0f760a5453ef"
 
-pull-write@^1.1.1:
+pull-write@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/pull-write/-/pull-write-1.1.2.tgz#60274aa478f8c827710b92095325331ab175fdd2"
   dependencies:

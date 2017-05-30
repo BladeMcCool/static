@@ -4,7 +4,7 @@ body {
   font-family: sans-serif;
 }
 
-/*button[aria-label]:hover:after {
+button[aria-label]:hover:after {
   content: attr(aria-label);
   position: absolute;
   font-size: .75rem;
@@ -15,7 +15,15 @@ body {
   color: #fff;
    transform: translate(-50%, -200%);
 }
-*/
+
+.connected {
+  color: #28ca42;
+}
+
+.connecting {
+  color: #ffbd2e;
+}
+
 
 .black-tint::after {
   z-index: 0;
@@ -120,16 +128,16 @@ input:focus::-ms-input-placeholder { /* Microsoft Edge */
 }
 
 .flex-grow {
-	flex-grow: 1;
+  flex-grow: 1;
 }
 
 .icon {
-	width: 3rem;
-	height: 3rem;
+  width: 3rem;
+  height: 3rem;
 }
 
 .post {
-	max-width: 36rem;
+  max-width: 36rem;
 }
 
 .block .pause {
@@ -142,18 +150,20 @@ input:focus::-ms-input-placeholder { /* Microsoft Edge */
 
 .post button { outline: none; }
 
-.content .block:first-child {
+.content .block:first-child,
+.content .block:first-child p {
   padding-top: 0;
   margin-top: 0;
 }
 
-.content .block:last-child {
+.content .block:last-child,
+.content .block:last-child p {
    padding-bottom: 0;
    margin-bottom: 0;
 }
 
 input {
-	outline: none !important;
+  outline: none !important;
 }
 
 
@@ -191,11 +201,11 @@ body {
 }
 
 .not-allowed {
-	cursor: not-allowed;
+  cursor: not-allowed;
 }
 
 .public-DraftEditorPlaceholder-root {
-	color: #CCC;
+  color: #CCC;
 }
 
 svg { display: block; }

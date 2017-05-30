@@ -1,5 +1,5 @@
 import React from "react";
-import { AtomicBlockUtils, Editor, EditorState } from "draft-js";
+import { AtomicBlockUtils, Editor, EditorState, RichUtils } from "draft-js";
 import musicmetadata from "music-metadata";
 
 import { Image, Audio, Video, File, PDF } from "./Blocks";
@@ -166,6 +166,16 @@ class MyEditor extends React.Component {
     }
   }
 
+  onKeyCommand(command) {
+    const { editorState } = this.state;
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      this.onChange(newState);
+      return true;
+    }
+    return false;
+  }
+
   blockRenderer(block) {
     if (block.getType() === "atomic") {
       return { component: Media, editable: false };
@@ -175,6 +185,7 @@ class MyEditor extends React.Component {
   }
 
   render() {
+    const { peerCount } = this.props;
     return (
       <div
         onDragOver={e => {
@@ -200,9 +211,11 @@ class MyEditor extends React.Component {
                     {this.props.name}
                   </span>
 
-                  <time className="f6 fw4 silver" dateTime="999999">
-                    {"now"}
-                  </time>
+                  <span
+                    className={`fw5 nowrap ${peerCount > 0 ? "green" : "red"} f6`}
+                  >
+                    {`${peerCount} ${peerCount === 1 ? "peer" : "peers"}`}
+                  </span>
                 </div>
 
               </div>
@@ -320,7 +333,7 @@ class MyEditor extends React.Component {
                 autoCapitalize={false}
                 autoComplete={false}
                 autoCorrect={false}
-                // handleKeyCommand={this.onKeyCommand.bind(this)}
+                handleKeyCommand={this.onKeyCommand.bind(this)}
                 onChange={this.onChange}
                 placeholder="Post anything..."
                 ref="editor"

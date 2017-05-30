@@ -42,10 +42,13 @@ class Post extends Component {
         return (
           <div
             key={block.text.substr(0, 256)}
-            className="f5 ph0-ns ph3 serif near-black lh-copy"
+            className="block f5 ph0-ns ph3 serif near-black lh-copy"
           >
             <Markdown
+              key={block.text.substr(0, 256)}
+              className="f5 ph0-ns ph3 serif near-black lh-copy"
               options={{
+                escapeHtml: true,
                 overrides: {
                   h1: {
                     props: {
@@ -60,11 +63,6 @@ class Post extends Component {
                   a: {
                     props: {
                       className: "link blue"
-                    }
-                  },
-                  p: {
-                    props: {
-                      className: "mv0"
                     }
                   }
                 }

@@ -5,9 +5,9 @@ import async from "async-es";
 import format from "date-fns/format";
 // import Metascraper from "metascraper";
 
+import Header from "./Header";
 import Post from "./Post";
 import PostEditor from "./Editor";
-import AutosizeInput from "react-input-autosize";
 
 import { IMAGE_TYPES, AUDIO_TYPES } from "./Editor/constants";
 
@@ -24,7 +24,7 @@ function rand(items) {
   return items[~~(Math.random() * items.length)];
 }
 
-class App extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.publish = this.publish.bind(this);
@@ -57,29 +57,22 @@ class App extends Component {
     node
       .on("start", () => {
         node.pubsub.subscribe("static.network", this.handleMessage);
-        setInterval(
-          () =>
-            node.swarm
-              .peers()
-              .then(peers => {
-                if (peers.length !== this.state.peers.length)
-                  this.setState({ peers: peers });
-                let seenPeers = {};
-                peers.forEach(peer => {
-                  const id = peer.peer.id.toJSON().id;
-                  if (seenPeers[id]) {
-                    console.error("Dupe", id);
-                  }
-                  seenPeers[peer.peer.id.toJSON().id] = true;
-                });
-              })
-              .catch(err => console.error(err)),
-          1000
-        );
+        this.updatePeerCount();
+        setInterval(this.updatePeerCount.bind(this), 1000);
       })
       .on("error", err => {
         console.error(err);
       });
+  }
+
+  updatePeerCount() {
+    node.swarm
+      .peers()
+      .then(peers => {
+        if (peers.length !== this.state.peers.length)
+          this.setState({ peers: peers });
+      })
+      .catch(err => console.error(err));
   }
 
   getInitialState() {
@@ -272,7 +265,7 @@ class App extends Component {
   }
 
   render() {
-    const peerCount = this.state.peers.length;
+    const { peers, name, icon } = this.state;
     return (
       <div>
         {this.state.error
@@ -280,85 +273,13 @@ class App extends Component {
               <span>{this.state.error}</span>
             </div>
           : null}
-        <header className="w-100 bg-white bb b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
 
-          <div className="flex-auto flex flex-row items-center">
-            <a href="." className="near-black f4 fw5 ttu sans-serif tl link">
-              <svg
-                id="logo"
-                fill="#111"
-                width="15px"
-                height="24px"
-                viewBox="0 0 10 16"
-              >
-                <polygon id="Shape" points="10 7 6 7 9 0 0 9 4 9 1 16" />
-              </svg>
-            </a>
-            <input
-              className="search fw4 h2 w-100 mw6 ph2 mh3 input-reset br2 bn bg-near-white"
-              placeholder="Search Static"
-              spellCheck="false"
-              type="text"
-              name="search"
-            />
-
-          </div>
-
-          <div className="flex flex-row items-center justify-end">
-
-            <div className="h2 flex flex-row items-center mr3">
-
-              <input
-                type="file"
-                name="iconPicker"
-                id="iconPicker"
-                className="dn"
-                onChange={this.setIcon}
-              />
-              <label htmlFor="iconPicker">
-                <div
-                  className="pointer h2 w2 br2 cover bg-near-black"
-                  style={{
-                    backgroundImage: `url('https://ipfs.io/ipfs/${this.state.icon}')`
-                  }}
-                />
-              </label>
-
-              <div className="ml2 flex flex-column">
-                <AutosizeInput
-                  className="nowrap pa0 input-reset bn f6 fw6 near-black"
-                  type="text"
-                  inputStyle={{
-                    padding: 0,
-                    border: "none",
-                    fontSize: ".875rem",
-                    fontWeight: 600
-                  }}
-                  onChange={event => {
-                    this.setState({ name: event.target.value });
-                    localStorage.setItem("name", event.target.value);
-                  }}
-                  placeholder="Anonymous"
-                  value={this.state.name || ""}
-                />
-
-                <span
-                  className={`fw5 nowrap ${peerCount > 0 ? "green" : "red"} f6`}
-                >
-                  {`${peerCount} ${peerCount === 1 ? "peer" : "peers"}`}
-                </span>
-              </div>
-            </div>
-
-            <button
-              onClick={this.toggleEditor}
-              className="pointer nowrap bn h2 ph2 br2 f5 fw5 white bg-bright-blue sans-serif"
-            >
-              New Post
-            </button>
-          </div>
-        </header>
-
+        <Header
+          peerCount={peers.length}
+          name={name}
+          icon={icon}
+          toggleEditor={this.toggleEditor}
+        />
         <main className="mt5-ns">
           {this.state.posts.map(post => {
             return (
@@ -378,11 +299,10 @@ class App extends Component {
               icon={this.state.icon}
               onPublish={this.publish}
               onClose={this.toggleEditor}
+              peerCount={peers.length}
             />
           : null}
       </div>
     );
   }
 }
-
-export default App;
