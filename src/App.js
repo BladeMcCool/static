@@ -50,18 +50,27 @@ export default class App extends Component {
       name,
       icon,
       posts,
-      peers: [],
-      showEditor: false
+      peers: []
     };
+
+    const t = this;
 
     node
       .on("start", () => {
         node.pubsub.subscribe("static.network", this.handleMessage);
         this.updatePeerCount();
         setInterval(this.updatePeerCount.bind(this), 1000);
+
+        node
+          .id()
+          .then(id => {
+            console.log(id);
+            this.setState({ id: id.id });
+          })
+          .catch(err => console.error(err));
       })
-      .on("error", err => {
-        console.error(err);
+      .on("error", error => {
+        t.setState({ error });
       });
   }
 
@@ -102,11 +111,6 @@ export default class App extends Component {
   }
 
   toggleEditor(event) {
-    if (!this.state.showEditor) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
     this.setState({
       showEditor: !this.state.showEditor
     });
@@ -264,23 +268,44 @@ export default class App extends Component {
     reader.readAsArrayBuffer(files[0]);
   }
 
+  handleDragOver() {
+    this.refs.editor.focus();
+  }
+
+  handleDragLeave() {
+    this.refs.editor.blur();
+    this.refs.editor.hideBackdrop();
+  }
+
   render() {
     const { peers, name, icon } = this.state;
     return (
-      <div>
-        {this.state.error
-          ? <div>
-              <span>{this.state.error}</span>
-            </div>
-          : null}
-
+      <div
+        onDragOver={this.handleDragOver.bind(this)}
+        onDragLeave={this.handleDragLeave.bind(this)}
+      >
         <Header
+          connectionError={this.state.error}
           peerCount={peers.length}
           name={name}
           icon={icon}
-          toggleEditor={this.toggleEditor}
+          onToggleEditor={this.toggleEditor}
+          onNameEdit={event => {
+            this.setState({ name: event.target.value });
+            localStorage.setItem("name", event.target.value);
+          }}
         />
-        <main className="mt5-ns">
+        <main className="mt4-ns">
+          <PostEditor
+            ref="editor"
+            name={this.state.name || "Anonymous"}
+            icon={this.state.icon}
+            id={this.state.id}
+            connectionError={this.state.error}
+            onPublish={this.publish}
+            onClose={this.toggleEditor}
+            peerCount={peers.length}
+          />
           {this.state.posts.map(post => {
             return (
               <Post
@@ -293,15 +318,6 @@ export default class App extends Component {
             );
           })}
         </main>
-        {this.state.showEditor
-          ? <PostEditor
-              name={this.state.name || "Anonymous"}
-              icon={this.state.icon}
-              onPublish={this.publish}
-              onClose={this.toggleEditor}
-              peerCount={peers.length}
-            />
-          : null}
       </div>
     );
   }

@@ -111,7 +111,7 @@ class Post extends Component {
         <div className="pa3 fw6 w-100 flex items-start justify-between">
           <div className="h2 flex items-center">
             <div
-              className="pointer h2 w2 br2 cover bg-near-black"
+              className="pointer h2 w2 br2 cover bg-light-gray"
               style={{ backgroundImage: iconURL }}
             />
             <div className="ml2">
@@ -141,7 +141,7 @@ class Post extends Component {
             </button>
             <button
               ref="star"
-              className="relative star pointer overflow-visible pa0 bg-transparent bn"
+              className="star pointer overflow-visible pa0 bg-transparent bn"
               aria-label="Star"
               onClick={event => {
                 this.toggleStarred();

@@ -1,5 +1,6 @@
 import React from "react";
 import { AtomicBlockUtils, Editor, EditorState, RichUtils } from "draft-js";
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import musicmetadata from "music-metadata";
 
 import { Image, Audio, Video, File, PDF } from "./Blocks";
@@ -45,6 +46,7 @@ class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.focus = this.focus.bind(this);
+    this.blur = this.blur.bind(this);
     this.state = {
       editorState: EditorState.createEmpty(),
       hasText: false
@@ -55,9 +57,16 @@ class MyEditor extends React.Component {
     };
   }
 
-  componentDidMount() {
-    // setTimeout(this.focus, 1000);
-    this.focus();
+  blur() {
+    this.refs.editor.blur();
+  }
+
+  showBackdrop() {
+    if (!this.state.showBackdrop) this.setState({ showBackdrop: true });
+  }
+
+  hideBackdrop() {
+    if (this.state.showBackdrop) this.setState({ showBackdrop: false });
   }
 
   focus() {
@@ -185,48 +194,52 @@ class MyEditor extends React.Component {
   }
 
   render() {
-    const { peerCount } = this.props;
+    const { connectionError, peerCount, id } = this.props;
     return (
       <div
         onDragOver={e => {
           e.preventDefault();
         }}
         onDrop={this.handleDrop.bind(this)}
-        className="modal fixed blurred absolute--fill pv4-ns bg-black-90 overflow-auto"
+        className="relative pv4-ns flex overflow-auto"
       >
-        <div id="editor" className="mv4-ns bt-ns b--transparent center">
-          <div className="post w-100 center bg-white ba-ns b--light-gray br2-ns">
-            <div className="pa3 fw6 w-100 flex flex-row items-start justify-between">
-
-              <div className="flex items-center">
-
-                <div
-                  className="h2 w2 br2 cover bg-near-black"
-                  style={{
-                    backgroundImage: `url('https://ipfs.io/ipfs/${this.props.icon}')`
-                  }}
-                />
-                <div className="ml2">
-                  <span className="mv0 mr1 f6 fw6 near-black flex flex-row items-center">
-                    {this.props.name}
-                  </span>
-
-                  <span
-                    className={`fw5 nowrap ${peerCount > 0 ? "green" : "red"} f6`}
-                  >
-                    {`${peerCount} ${peerCount === 1 ? "peer" : "peers"}`}
-                  </span>
+        <ReactCSSTransitionGroup
+          transitionName="editor"
+          transitionEnterTimeout={333}
+          transitionLeaveTimeout={333}
+        >
+          {this.state.showBackdrop
+            ? <div
+                onClick={this.hideBackdrop.bind(this)}
+                className="backdrop left-0 right-0 bottom-0 top-0 bg-black-90 blurred"
+              />
+            : null}
+        </ReactCSSTransitionGroup>
+        <div id="editor" className="post w-100 relative  b--transparent center">
+          <div className=" center bg-white ba-ns bb b--light-gray br2-ns">
+            {
+              <div className="pa3 fw6 w-100 flex flex-row items-start justify-between">
+                <div className="flex items-center">
+                  <div
+                    className="h2 w2 br2 cover bg-near-black"
+                    style={{
+                      backgroundImage: `url('https://ipfs.io/ipfs/${this.props.icon}')`
+                    }}
+                  />
+                  <div className="ml2">
+                    <span className="mv0 mr1 f6 fw6 near-black flex flex-row items-center">
+                      {this.props.name}
+                    </span>
+                    <span
+                      className={`fw5 nowrap ${connectionError ? "offline" : peerCount > 0 ? "connected" : "connecting"} f6`}
+                    >
+                      {connectionError
+                        ? "offline"
+                        : peerCount > 0 ? "online" : "connecting..."}
+                    </span>
+                  </div>
                 </div>
 
-              </div>
-
-              <div>
-                <button
-                  className="light-silver ma0 pa0 bg-transparent bn fw4 f5 hover-silver pointer"
-                  onClick={this.props.onClose}
-                >
-                  {"Close"}
-                </button>
                 <button
                   onClick={
                     this.state.hasText
@@ -237,51 +250,47 @@ class MyEditor extends React.Component {
                             .map(block => {
                               const type = block.getType();
                               if (type === "unstyled") {
-                                return { type: "text", text: block.getText() };
+                                return {
+                                  type: "text",
+                                  text: block.getText()
+                                };
                               }
-
                               if (type === "blockquote") {
                                 return {
                                   type: "text",
                                   text: `> ${block.getText()}`
                                 };
                               }
-
                               if (type === "code-block") {
                                 return {
                                   type: "text",
                                   text: `\`${block.getText()}\``
                                 };
                               }
-
                               if (type === "header-one") {
                                 return {
                                   type: "text",
                                   text: `# ${block.getText()}`
                                 };
                               }
-
                               if (type === "header-two") {
                                 return {
                                   type: "text",
                                   text: `## ${block.getText()}`
                                 };
                               }
-
                               if (type === "header-three") {
                                 return {
                                   type: "text",
                                   text: `### ${block.getText()}`
                                 };
                               }
-
                               if (type === "unordered-list-item") {
                                 return {
                                   type: "text",
                                   text: `* ${block.getText()}`
                                 };
                               }
-
                               if (type === "atomic") {
                                 const entity = contentState.getEntity(
                                   block.getEntityAt(0)
@@ -311,6 +320,11 @@ class MyEditor extends React.Component {
                               }
                             });
                           this.props.onPublish(blocks);
+                          this.setState({
+                            editorState: EditorState.createEmpty(),
+                            hasText: false
+                          });
+                          this.hideBackdrop();
                         }
                       : null
                   }
@@ -322,12 +336,14 @@ class MyEditor extends React.Component {
                 >
                   Publish
                 </button>
-
               </div>
-            </div>
+            }
 
-            <div className={`serif f5 lh-copy ph3 pb3`}>
+            <div className={`z-999 serif f5 lh-copy pa3 pt0`}>
               <Editor
+                onFocus={() => {
+                  this.showBackdrop.bind(this)();
+                }}
                 editorState={this.state.editorState}
                 blockRendererFn={this.blockRenderer}
                 autoCapitalize={false}

@@ -4,9 +4,15 @@ import AutosizeInput from "react-input-autosize";
 
 export default class Header extends Component {
   render() {
-    const { peerCount, icon, toggleEditor } = this.props;
+    const {
+      peerCount,
+      icon,
+      onToggleEditor,
+      onNameEdit,
+      connectionError
+    } = this.props;
     return (
-      <header className="w-100 bg-white bb b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
+      <header className="bg-white w-100 b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
         <div className="flex-auto flex flex-row items-center">
           <a href="." className="near-black f4 fw5 ttu sans-serif tl link">
             <svg fill="#111" width="15px" height="24px" viewBox="0 0 10 16">
@@ -23,7 +29,7 @@ export default class Header extends Component {
         </div>
 
         <div className="flex flex-row items-center justify-end">
-          <div className="h2 flex flex-row items-center mr3">
+          <div className="h2 flex flex-row items-center">
             <input
               type="file"
               name="iconPicker"
@@ -33,7 +39,7 @@ export default class Header extends Component {
             />
             <label htmlFor="iconPicker">
               <div
-                className="pointer h2 w2 br2 cover bg-near-black"
+                className="pointer h2 w2 br2 cover bg-light-gray"
                 style={{
                   backgroundImage: `url('https://ipfs.io/ipfs/${icon}')`
                 }}
@@ -41,39 +47,40 @@ export default class Header extends Component {
             </label>
 
             <div className="ml2 flex flex-column">
-              <AutosizeInput
-                className="nowrap pa0 input-reset bn f6 fw6 near-black"
-                type="text"
-                inputStyle={{
-                  padding: 0,
-                  border: "none",
-                  fontSize: ".875rem",
-                  fontWeight: 600
-                }}
-                onChange={event => {
-                  this.setState({ name: event.target.value });
-                  localStorage.setItem("name", event.target.value);
-                }}
-                placeholder="Anonymous"
-                value={this.props.name || ""}
-              />
+              <span className="flex flex-row items-center">
+                <AutosizeInput
+                  className="nowrap pa0 input-reset bn f6 fw6 near-black"
+                  type="text"
+                  inputStyle={{
+                    padding: 0,
+                    border: "none",
+                    fontSize: ".875rem",
+                    fontWeight: 600,
+                    backgroundColor: "transparent"
+                  }}
+                  onChange={onNameEdit}
+                  placeholder="Anonymous"
+                  value={this.props.name || ""}
+                />
+              </span>
 
               <span
-                className={`fw5 nowrap ${peerCount > 0 ? "connected" : "connecting"} f6`}
+                className={`fw5 nowrap ${connectionError ? "offline" : peerCount > 0 ? "connected" : "connecting"} f6`}
               >
-                {peerCount > 0
-                  ? `${peerCount} ${peerCount === 1 ? "peer" : "peers"}`
-                  : "connecting..."}
+                {connectionError
+                  ? "offline"
+                  : peerCount > 0 ? "online" : "connecting..."}
               </span>
             </div>
           </div>
-
-          <button
-            onClick={toggleEditor}
-            className="pointer nowrap bn h2 ph2 br2 f5 fw5 white bg-bright-blue sans-serif"
-          >
-            New Post
-          </button>
+          {
+            // <button
+            //   onClick={onToggleEditor}
+            //   className="pointer nowrap bn h2 ph2 br2 f5 fw5 white bg-bright-blue sans-serif"
+            // >
+            //   New Post
+            // </button>
+          }
         </div>
       </header>
     );
@@ -83,5 +90,7 @@ export default class Header extends Component {
 Header.propTypes = {
   peerCount: PropTypes.number.isRequired,
   icon: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+  onNameEdit: PropTypes.func.isRequired,
+  onToggleEditor: PropTypes.func.isRequired
 };
