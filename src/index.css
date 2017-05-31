@@ -16,6 +16,14 @@ body {
    transform: translate(-50%, -200%);
 }*/
 
+.mtn5 {
+  margin-top: -2rem;
+}
+
+.mt35 {
+  margin-top: 1.75rem;
+}
+
 .blurred { 
   -webkit-backdrop-filter: blur(0.125rem); 
   backdrop-filter: blur(0.125rem);
@@ -227,7 +235,7 @@ body {
 }
 
 .public-DraftEditorPlaceholder-root {
-  color: #BBB;
+  color: #AAA;
 }
 
 

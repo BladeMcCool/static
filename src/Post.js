@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import { Link } from "react-router-dom";
 import Markdown from "markdown-to-jsx";
 import moment from "moment";
 
@@ -107,7 +108,7 @@ class Post extends Component {
     });
 
     return (
-      <article className="post center mb4-ns mv0 bg-white br2-ns ba-ns bb b--light-gray">
+      <article className="post center mv2-ns mv0 bg-white br2-ns ba-ns bb b--light-gray">
         <div className="pa3 fw6 w-100 flex items-start justify-between">
           <div className="h2 flex items-center">
             <div
@@ -115,9 +116,12 @@ class Post extends Component {
               style={{ backgroundImage: iconURL }}
             />
             <div className="ml2">
-              <span className="pointer mv0 mr1 f6 fw6 near-black flex flex-row items-start">
+              <Link
+                to={`/@${this.props.id}`}
+                className="link mv0 mr1 f6 fw6 near-black flex flex-row items-start"
+              >
                 {this.props.author}
-              </span>
+              </Link>
 
               <time className="pointer f6 fw4 silver" dateTime="999999">
                 {moment(this.props.date_published).fromNow()}

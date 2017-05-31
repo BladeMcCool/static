@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import "./App.css";
 
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
 import async from "async-es";
 import format from "date-fns/format";
 // import Metascraper from "metascraper";
 
+import Home from "./Home";
 import Header from "./Header";
 import Post from "./Post";
-import PostEditor from "./Editor";
 
 import { IMAGE_TYPES, AUDIO_TYPES } from "./Editor/constants";
 
@@ -214,6 +216,7 @@ export default class App extends Component {
         new Buffer(
           JSON.stringify({
             author: this.state.name || "Anonymous",
+            id: this.state.id,
             icon: this.state.icon ||
               "QmXmFMmaNurZZ95NSn5WNBpwoNy8U5MjNj3SvsdsZK5PNQ",
             content: content,
@@ -250,6 +253,7 @@ export default class App extends Component {
   }
 
   setIcon(event) {
+    alert("??");
     const files = event.target.files || event.dataTransfer.files;
     if (!files || files.length !== 1) return;
     const reader = new FileReader();
@@ -269,56 +273,90 @@ export default class App extends Component {
   }
 
   handleDragOver() {
-    this.refs.editor.focus();
+    // this.refs.editor.focus();
   }
 
   handleDragLeave() {
-    this.refs.editor.blur();
-    this.refs.editor.hideBackdrop();
+    // this.refs.editor.blur();
+    // this.refs.editor.hideBackdrop();
   }
 
   render() {
-    const { peers, name, icon } = this.state;
+    const { peers, posts, name, icon, id } = this.state;
+    const iconURL = `url('https://ipfs.io/ipfs/${icon}')`;
     return (
-      <div
-        onDragOver={this.handleDragOver.bind(this)}
-        onDragLeave={this.handleDragLeave.bind(this)}
-      >
-        <Header
-          connectionError={this.state.error}
-          peerCount={peers.length}
-          name={name}
-          icon={icon}
-          onToggleEditor={this.toggleEditor}
-          onNameEdit={event => {
-            this.setState({ name: event.target.value });
-            localStorage.setItem("name", event.target.value);
-          }}
-        />
-        <main className="mt4-ns">
-          <PostEditor
-            ref="editor"
-            name={this.state.name || "Anonymous"}
-            icon={this.state.icon}
-            id={this.state.id}
+      <Router>
+        <div
+          onDragOver={this.handleDragOver.bind(this)}
+          onDragLeave={this.handleDragLeave.bind(this)}
+        >
+          <Header
             connectionError={this.state.error}
-            onPublish={this.publish}
-            onClose={this.toggleEditor}
             peerCount={peers.length}
+            name={name}
+            icon={icon}
+            id={id}
+            onToggleEditor={this.toggleEditor}
+            setIcon={this.setIcon}
+            onNameEdit={event => {
+              this.setState({ name: event.target.value });
+              localStorage.setItem("name", event.target.value);
+            }}
           />
-          {this.state.posts.map(post => {
-            return (
-              <Post
-                key={post.author + post.date_published}
-                author={post.author}
-                icon={post.icon}
-                content={post.content}
-                date_published={post.date_published}
+          <Route
+            exact
+            path="/"
+            render={props => (
+              <Home
+                peers={peers}
+                posts={posts}
+                onPublish={this.publish}
+                icon={icon}
+                id={id}
+                name={name}
+                peerCount={peers.length}
               />
-            );
-          })}
-        </main>
-      </div>
+            )}
+          />
+          <Route
+            path="/@:id"
+            render={({ match }) => (
+              <div className="mv3">
+                <div className="absolute mh3 bg-white mw5 br2 ba b--light-gray">
+                  <div
+                    className="w-100 h5 cover bg-light-gray "
+                    style={{ backgroundImage: iconURL }}
+                  >
+                    <button>Follow</button>
+                  </div>
+
+                  <div className="f6 w5 pa3">
+                    <a className="link mv0 mr1 f6 fw6 near-black flex flex-row items-start">
+                      Oliver
+                    </a>
+
+                    <span className="f6 fw4 silver" dateTime="999999">
+                      A description.
+                    </span>
+                  </div>
+                </div>
+                {posts.filter(post => post.id == match.params.id).map(post => {
+                  return (
+                    <Post
+                      key={post.author + post.date_published}
+                      author={post.author}
+                      id={post.id}
+                      icon={post.icon}
+                      content={post.content}
+                      date_published={post.date_published}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          />
+        </div>
+      </Router>
     );
   }
 }

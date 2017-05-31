@@ -201,7 +201,7 @@ class MyEditor extends React.Component {
           e.preventDefault();
         }}
         onDrop={this.handleDrop.bind(this)}
-        className="relative pv4-ns flex overflow-auto"
+        className="relative mt3-ns mb2-ns flex overflow-auto"
       >
         <ReactCSSTransitionGroup
           transitionName="editor"
@@ -211,17 +211,20 @@ class MyEditor extends React.Component {
           {this.state.showBackdrop
             ? <div
                 onClick={this.hideBackdrop.bind(this)}
-                className="backdrop left-0 right-0 bottom-0 top-0 bg-black-90 blurred"
+                className="backdrop z-3 left-0 right-0 bottom-0 top-0 bg-black-90 blurred"
               />
             : null}
         </ReactCSSTransitionGroup>
-        <div id="editor" className="post w-100 relative  b--transparent center">
+        <div
+          id="editor"
+          className="z-4 post w-100 relative  b--transparent center"
+        >
           <div className=" center bg-white ba-ns bb b--light-gray br2-ns">
             {
               <div className="pa3 fw6 w-100 flex flex-row items-start justify-between">
                 <div className="flex items-center">
                   <div
-                    className="h2 w2 br2 cover bg-near-black"
+                    className="h2 w2 br2 cover bg-light-gray"
                     style={{
                       backgroundImage: `url('https://ipfs.io/ipfs/${this.props.icon}')`
                     }}
@@ -239,107 +242,110 @@ class MyEditor extends React.Component {
                     </span>
                   </div>
                 </div>
-
-                <button
-                  onClick={
-                    this.state.hasText
-                      ? () => {
-                          const contentState = this.state.editorState.getCurrentContent();
-                          const blocks = contentState
-                            .getBlocksAsArray()
-                            .map(block => {
-                              const type = block.getType();
-                              if (type === "unstyled") {
-                                return {
-                                  type: "text",
-                                  text: block.getText()
-                                };
-                              }
-                              if (type === "blockquote") {
-                                return {
-                                  type: "text",
-                                  text: `> ${block.getText()}`
-                                };
-                              }
-                              if (type === "code-block") {
-                                return {
-                                  type: "text",
-                                  text: `\`${block.getText()}\``
-                                };
-                              }
-                              if (type === "header-one") {
-                                return {
-                                  type: "text",
-                                  text: `# ${block.getText()}`
-                                };
-                              }
-                              if (type === "header-two") {
-                                return {
-                                  type: "text",
-                                  text: `## ${block.getText()}`
-                                };
-                              }
-                              if (type === "header-three") {
-                                return {
-                                  type: "text",
-                                  text: `### ${block.getText()}`
-                                };
-                              }
-                              if (type === "unordered-list-item") {
-                                return {
-                                  type: "text",
-                                  text: `* ${block.getText()}`
-                                };
-                              }
-                              if (type === "atomic") {
-                                const entity = contentState.getEntity(
-                                  block.getEntityAt(0)
-                                );
-                                const data = entity.getData();
-                                if (AUDIO_TYPES.indexOf(data.type) !== -1)
-                                  return {
-                                    title: data.title,
-                                    artist: data.artist,
-                                    album: data.album,
-                                    date: data.date,
-                                    picture: data.picture,
-                                    type: data.type,
-                                    file: data.file,
-                                    name: data.name,
-                                    size: data.size
-                                  };
-                                return {
-                                  type: data.type,
-                                  file: data.file,
-                                  name: data.name,
-                                  size: data.size
-                                };
-                              } else {
-                                console.warn("Unexpected block type: " + type);
-                                return null;
-                              }
-                            });
-                          this.props.onPublish(blocks);
-                          this.setState({
-                            editorState: EditorState.createEmpty(),
-                            hasText: false
-                          });
-                          this.hideBackdrop();
-                        }
-                      : null
-                  }
-                  className={
-                    this.state.hasText
-                      ? "bright-blue ma0 pa0 bg-transparent bn fw4 f5 ml3 pointer"
-                      : "bright-blue o-30 not-allowed ma0 pa0 bg-transparent bn fw5 f5 ml3"
-                  }
-                >
-                  Publish
-                </button>
+                {this.state.showBackdrop
+                  ? <button
+                      onClick={
+                        this.state.hasText
+                          ? () => {
+                              const contentState = this.state.editorState.getCurrentContent();
+                              const blocks = contentState
+                                .getBlocksAsArray()
+                                .map(block => {
+                                  const type = block.getType();
+                                  if (type === "unstyled") {
+                                    return {
+                                      type: "text",
+                                      text: block.getText()
+                                    };
+                                  }
+                                  if (type === "blockquote") {
+                                    return {
+                                      type: "text",
+                                      text: `> ${block.getText()}`
+                                    };
+                                  }
+                                  if (type === "code-block") {
+                                    return {
+                                      type: "text",
+                                      text: `\`${block.getText()}\``
+                                    };
+                                  }
+                                  if (type === "header-one") {
+                                    return {
+                                      type: "text",
+                                      text: `# ${block.getText()}`
+                                    };
+                                  }
+                                  if (type === "header-two") {
+                                    return {
+                                      type: "text",
+                                      text: `## ${block.getText()}`
+                                    };
+                                  }
+                                  if (type === "header-three") {
+                                    return {
+                                      type: "text",
+                                      text: `### ${block.getText()}`
+                                    };
+                                  }
+                                  if (type === "unordered-list-item") {
+                                    return {
+                                      type: "text",
+                                      text: `* ${block.getText()}`
+                                    };
+                                  }
+                                  if (type === "atomic") {
+                                    const entity = contentState.getEntity(
+                                      block.getEntityAt(0)
+                                    );
+                                    const data = entity.getData();
+                                    if (AUDIO_TYPES.indexOf(data.type) !== -1)
+                                      return {
+                                        title: data.title,
+                                        artist: data.artist,
+                                        album: data.album,
+                                        date: data.date,
+                                        picture: data.picture,
+                                        type: data.type,
+                                        file: data.file,
+                                        name: data.name,
+                                        size: data.size
+                                      };
+                                    return {
+                                      type: data.type,
+                                      file: data.file,
+                                      name: data.name,
+                                      size: data.size
+                                    };
+                                  } else {
+                                    console.warn(
+                                      "Unexpected block type: " + type
+                                    );
+                                    return null;
+                                  }
+                                });
+                              this.props.onPublish(blocks);
+                              this.setState({
+                                editorState: EditorState.createEmpty(),
+                                hasText: false
+                              });
+                              this.hideBackdrop();
+                            }
+                          : null
+                      }
+                      className={
+                        this.state.hasText
+                          ? "bright-blue ma0 pa0 bg-transparent bn fw4 f5 ml3 pointer"
+                          : "bright-blue o-30 not-allowed ma0 pa0 bg-transparent bn fw5 f5 ml3"
+                      }
+                    >
+                      Publish
+                    </button>
+                  : null}
               </div>
             }
 
-            <div className={`z-999 serif f5 lh-copy pa3 pt0`}>
+            <div className={`serif f5 lh-copy pa3 pt0`}>
               <Editor
                 onFocus={() => {
                   this.showBackdrop.bind(this)();
