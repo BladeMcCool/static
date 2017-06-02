@@ -6,14 +6,7 @@ import { Link } from "react-router-dom";
 
 export default class Header extends Component {
   render() {
-    const {
-      peerCount,
-      icon,
-      onToggleEditor,
-      onNameEdit,
-      connectionError,
-      id
-    } = this.props;
+    const { peerCount, icon, onNameEdit, connectionError } = this.props;
     return (
       <header className="bg-white w-100 b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
         <div className="flex-auto flex flex-row items-center">

@@ -130,7 +130,7 @@ class Post extends Component {
               </Link>
 
               <time className="pointer f6 fw4 silver" dateTime="999999">
-                {moment(this.props.date_published).fromNow()}
+                {moment(date_published).fromNow()}
               </time>
             </div>
           </div>

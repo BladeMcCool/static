@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 
 import PostEditor from "./Editor";
 import Post from "./Post";
-import Feed from "./Feed";
 
 export default class Home extends Component {
   handleDragOver() {
     this.refs.editor.focus();
+    this.refs.editor.showBackdrop();
   }
 
   handleDragLeave() {

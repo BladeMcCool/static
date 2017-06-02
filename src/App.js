@@ -44,8 +44,6 @@ export default class App extends Component {
       "Qmf9ETausmHGse2BGjwZBX4QB7iMHR8QsMsubqNTeR8odQ"
     ];
 
-    const canopies = ["QmSQJRrFZru62ZWHXSgbw5ZPwdA1MLPj16nXgHpUV5yviP"];
-
     const icon = localStorage.getItem("icon") || rand(icons);
     if (!localStorage.getItem("icon")) localStorage.setItem("icon", icon);
 
@@ -124,7 +122,7 @@ export default class App extends Component {
 
         const { author } = post;
         // if (this.state.profiles[author.id]) {
-        const localProfile = this.state.profiles[author.id];
+        // const localProfile = this.state.profiles[author.id];
         // display a warning if a trusted user has changed their name
         // if (author !== localProfile) {
         //   post.warning = true;
@@ -132,7 +130,10 @@ export default class App extends Component {
         // } else {
 
         // !!! DANGEROUS !!! SAFETY CHECKS NEEDED
-        this.state.profiles[author.id] = author;
+        let newProfiles = this.state.profiles;
+        newProfiles[author.id] = author;
+        this.setState({ profiles: newProfiles });
+
         // }
         this.setState({ posts: [post, ...this.state.posts] });
         localStorage.setItem("posts", JSON.stringify(this.state.posts));
@@ -313,8 +314,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { peers, posts, name, icon, id, canopy, description } = this.state;
-    const iconURL = `url('https://ipfs.io/ipfs/${icon}')`;
+    const { peers, posts, name, icon, id } = this.state;
     return (
       <Router>
         <div
@@ -346,7 +346,6 @@ export default class App extends Component {
                 icon={icon}
                 id={id}
                 name={name}
-                peerCount={peers.length}
               />
             )}
           />

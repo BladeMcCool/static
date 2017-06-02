@@ -116,15 +116,8 @@ export class Audio extends Component {
       >
         <ReactHowler
           ref="player"
-          src={[
-            this.props.src,
-            this.props.src,
-            this.props.src,
-            this.props.src,
-            this.props.src
-          ]}
-          preload={false}
-          format={["flac", "mp3", "m4a", "x-flac", "x-m4a"]}
+          src={[this.props.src]}
+          format={["flac"]}
           playing={this.state.playing}
           download={this.props.name}
           onLoad={this.handleOnLoad}

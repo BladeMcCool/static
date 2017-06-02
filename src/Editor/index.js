@@ -194,7 +194,7 @@ class MyEditor extends React.Component {
   }
 
   render() {
-    const { connectionError, peerCount, id } = this.props;
+    const { connectionError, peerCount } = this.props;
     return (
       <div
         onDragOver={e => {

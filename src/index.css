@@ -16,6 +16,10 @@ body {
    transform: translate(-50%, -200%);
 }*/
 
+.pen {
+  pointer-events: none;
+}
+
 .break-all {
   word-break: break-all;
 }
