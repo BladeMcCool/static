@@ -6,27 +6,38 @@ import Post from "./Post";
 import Feed from "./Feed";
 
 export default class Home extends Component {
+  handleDragOver() {
+    this.refs.editor.focus();
+  }
+
+  handleDragLeave() {
+    this.refs.editor.blur();
+    this.refs.editor.hideBackdrop();
+  }
+
   render() {
-    const { posts, peers, onPublish } = this.props;
+    const { posts, peerCount, onPublish, connectionError } = this.props;
     return (
-      <main className="mt0-ns">
+      <main
+        onDragOver={this.handleDragOver.bind(this)}
+        onDragLeave={this.handleDragLeave.bind(this)}
+        className="mt0-ns"
+      >
         <PostEditor
           ref="editor"
           name={this.props.name || "Anonymous"}
           icon={this.props.icon}
           id={this.props.id}
-          connectionError={this.props.error}
+          connectionError={connectionError}
           onPublish={onPublish}
           onClose={this.toggleEditor}
-          peerCount={peers.length}
+          peerCount={peerCount}
         />
         {posts.map(post => {
           return (
             <Post
-              key={post.author + post.date_published}
+              key={post.author.id + post.date_published}
               author={post.author}
-              id={post.id}
-              icon={post.icon}
               content={post.content}
               date_published={post.date_published}
             />

@@ -43,15 +43,25 @@ export default class App extends Component {
       "QmSYUjoh5ptNiL2ZKkmADjweHC7FbRWo9ZVLjFjWKWSQ1G",
       "Qmf9ETausmHGse2BGjwZBX4QB7iMHR8QsMsubqNTeR8odQ"
     ];
+
+    const canopies = ["QmSQJRrFZru62ZWHXSgbw5ZPwdA1MLPj16nXgHpUV5yviP"];
+
     const icon = localStorage.getItem("icon") || rand(icons);
     if (!localStorage.getItem("icon")) localStorage.setItem("icon", icon);
 
+    const canopy = localStorage.getItem("canopy");
+    const description = localStorage.getItem("description") || "";
+
     const posts = JSON.parse(localStorage.getItem("posts")) || [];
+    const profiles = JSON.parse(localStorage.getItem("profiles")) || {};
 
     this.state = {
       name,
       icon,
       posts,
+      canopy,
+      description,
+      profiles,
       peers: []
     };
 
@@ -62,7 +72,6 @@ export default class App extends Component {
         node.pubsub.subscribe("static.network", this.handleMessage);
         this.updatePeerCount();
         setInterval(this.updatePeerCount.bind(this), 1000);
-
         node
           .id()
           .then(id => {
@@ -91,7 +100,7 @@ export default class App extends Component {
   }
 
   handleMessage(msg) {
-    // first make sure data is correct length of hash!!
+    // TODO first make sure data is correct length of hash!!
     const hash = msg.data.toString();
 
     node.files.cat(hash, (err, stream) => {
@@ -106,8 +115,28 @@ export default class App extends Component {
       });
 
       stream.on("end", () => {
-        this.setState({ posts: [JSON.parse(res), ...this.state.posts] });
+        let post;
+        try {
+          post = JSON.parse(res);
+        } catch (err) {
+          return console.error("Could not parse post", err);
+        }
+
+        const { author } = post;
+        // if (this.state.profiles[author.id]) {
+        const localProfile = this.state.profiles[author.id];
+        // display a warning if a trusted user has changed their name
+        // if (author !== localProfile) {
+        //   post.warning = true;
+        // }
+        // } else {
+
+        // !!! DANGEROUS !!! SAFETY CHECKS NEEDED
+        this.state.profiles[author.id] = author;
+        // }
+        this.setState({ posts: [post, ...this.state.posts] });
         localStorage.setItem("posts", JSON.stringify(this.state.posts));
+        localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
       });
     });
   }
@@ -215,10 +244,13 @@ export default class App extends Component {
       node.files.add(
         new Buffer(
           JSON.stringify({
-            author: this.state.name || "Anonymous",
-            id: this.state.id,
-            icon: this.state.icon ||
-              "QmXmFMmaNurZZ95NSn5WNBpwoNy8U5MjNj3SvsdsZK5PNQ",
+            author: {
+              id: this.state.id,
+              name: this.state.name || "Anonymous",
+              icon: this.state.icon,
+              canopy: this.state.canopy,
+              description: this.state.description
+            },
             content: content,
             date_published: format(
               new Date(Date.now()),
@@ -253,7 +285,6 @@ export default class App extends Component {
   }
 
   setIcon(event) {
-    alert("??");
     const files = event.target.files || event.dataTransfer.files;
     if (!files || files.length !== 1) return;
     const reader = new FileReader();
@@ -282,7 +313,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { peers, posts, name, icon, id } = this.state;
+    const { peers, posts, name, icon, id, canopy, description } = this.state;
     const iconURL = `url('https://ipfs.io/ipfs/${icon}')`;
     return (
       <Router>
@@ -308,8 +339,9 @@ export default class App extends Component {
             path="/"
             render={props => (
               <Home
-                peers={peers}
+                peerCount={peers.length}
                 posts={posts}
+                connectionError={this.state.error}
                 onPublish={this.publish}
                 icon={icon}
                 id={id}
@@ -320,41 +352,74 @@ export default class App extends Component {
           />
           <Route
             path="/@:id"
-            render={({ match }) => (
-              <div className="mv3">
-                <div className="absolute mh3 bg-white mw5 br2 ba b--light-gray">
-                  <div
-                    className="w-100 h5 cover bg-light-gray "
-                    style={{ backgroundImage: iconURL }}
-                  >
-                    <button>Follow</button>
-                  </div>
-
-                  <div className="f6 w5 pa3">
-                    <a className="link mv0 mr1 f6 fw6 near-black flex flex-row items-start">
-                      Oliver
-                    </a>
-
-                    <span className="f6 fw4 silver" dateTime="999999">
-                      A description.
-                    </span>
-                  </div>
-                </div>
-                {posts.filter(post => post.id == match.params.id).map(post => {
-                  return (
-                    <Post
-                      key={post.author + post.date_published}
-                      author={post.author}
-                      id={post.id}
-                      icon={post.icon}
-                      content={post.content}
-                      date_published={post.date_published}
+            render={({ match }) =>
+              (this.state.profiles[match.params.id]
+                ? <div>
+                    <div
+                      className={
+                        this.state.profiles[match.params.id] &&
+                          this.state.profiles[match.params.id].canopy
+                          ? "w-100 h5 bg-light-gray flex flex-row items-center cover bg-center"
+                          : "w-100 h4 bg-near-black flex flex-row items-center cover bg-center"
+                      }
+                      style={{
+                        backgroundImage: this.state.profiles[match.params.id] &&
+                          this.state.profiles[match.params.id].canopy
+                          ? `url('https://ipfs.io/ipfs/${this.state.profiles[match.params.id].canopy}`
+                          : "none"
+                      }}
                     />
-                  );
-                })}
-              </div>
-            )}
+                    <div
+                      className="mtn5 center ba b--white bw1 h4 w4 minw4 br2 cover bg-light-gray "
+                      style={{
+                        backgroundImage: this.state.profiles[match.params.id]
+                          ? `url('https://ipfs.io/ipfs/${this.state.profiles[match.params.id].icon}`
+                          : "none"
+                      }}
+                    />
+
+                    <div className="center tc ph3">
+                      <h1 className="mv2 lh-title link f4 f3 fw6 near-black">
+                        {this.state.profiles[match.params.id].name}
+                      </h1>
+
+                      <h2 className="mv2 f6 fw4 lh-copy silver break-all">
+                        @
+                        <span className="nowrap">
+                          {match.params.id.substr(0, 23)}
+                        </span>
+                        <span className="nowrap">
+                          {match.params.id.substr(23, 23)}
+                        </span>
+                      </h2>
+
+                      <p className="measure tc mv2 center f6 fw4 lh-copy near-black">
+                        {this.state.profiles[match.params.id].description}
+                      </p>
+
+                    </div>
+                    <div className="mt4 mb5">
+                      {posts
+                        .filter(post => post.author.id === match.params.id)
+                        .map(post => {
+                          return (
+                            <Post
+                              key={post.author.id + post.date_published}
+                              author={post.author}
+                              content={post.content}
+                              date_published={post.date_published}
+                            />
+                          );
+                        })}
+                    </div>
+                  </div>
+                : <div className="bg-bright-blue pa3 flex items-center justify-center">
+                    <span className="white bg-bright-blue wrap-all">
+                      This will work when js-ipfs supports ipns...
+                    </span>
+                  </div>)}
           />
+
         </div>
       </Router>
     );

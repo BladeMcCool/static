@@ -3,13 +3,34 @@ import ReactHowler from "react-howler";
 import raf from "raf";
 
 export class Image extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { viewing: false };
+  }
   render() {
     return (
-      <img
-        className="w-100 mv2 db block"
-        alt={this.props.name}
-        src={this.props.src}
-      />
+      <figure>
+        {this.state.viewing
+          ? <div
+              onClick={() => this.setState({ viewing: false })}
+              className="backdrop pa4 z-3 flex items-center justify-center bg-black-90 blurred"
+            >
+              <img
+                onClick={() => this.setState({ viewing: true })}
+                className={"z-4"}
+                alt={this.props.name}
+                src={this.props.src}
+              />
+            </div>
+          : null}
+
+        <img
+          onClick={() => this.setState({ viewing: true })}
+          className={"w-100 mv2 db block"}
+          alt={this.props.name}
+          src={this.props.src}
+        />
+      </figure>
     );
   }
 }

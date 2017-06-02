@@ -16,8 +16,12 @@ body {
    transform: translate(-50%, -200%);
 }*/
 
+.break-all {
+  word-break: break-all;
+}
+
 .mtn5 {
-  margin-top: -2rem;
+  margin-top: -4rem;
 }
 
 .mt35 {
@@ -25,8 +29,8 @@ body {
 }
 
 .blurred { 
-  -webkit-backdrop-filter: blur(0.125rem); 
-  backdrop-filter: blur(0.125rem);
+  -webkit-backdrop-filter: blur(0.5rem); 
+  backdrop-filter: blur(0.5rem);
 }
 
 
@@ -140,21 +144,21 @@ body {
 }
 
 input:focus::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color:   #777;
+    color:   #AAA;
 }
 input:focus:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-   color:    #777;
+   color:    #AAA;
    opacity:  1;
 }
 input:focus::-moz-placeholder { /* Mozilla Firefox 19+ */
-   color:    #777;
+   color:    #AAA;
    opacity:  1;
 }
 input:focus:-ms-input-placeholder { /* Internet Explorer 10-11 */
-   color:    #777;
+   color:    #AAA;
 }
 input:focus::-ms-input-placeholder { /* Microsoft Edge */
-   color:    #777;
+   color:    #AAA;
 }
 
 .flex-grow {
@@ -196,6 +200,9 @@ input {
   outline: none !important;
 }
 
+.minw4 {
+  min-width: 8rem;
+}
 
 .red { color: #FF4136; }
 .green { color: #2ECC40; }

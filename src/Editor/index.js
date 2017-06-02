@@ -242,7 +242,7 @@ class MyEditor extends React.Component {
                     </span>
                   </div>
                 </div>
-                {this.state.showBackdrop
+                {this.state.showBackdrop || this.state.hasText
                   ? <button
                       onClick={
                         this.state.hasText

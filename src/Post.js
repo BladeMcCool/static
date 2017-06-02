@@ -36,9 +36,10 @@ class Post extends Component {
   }
 
   render() {
-    const iconURL = `url('https://ipfs.io/ipfs/${this.props.icon}')`;
+    const { author, content, date_published } = this.props;
+    const iconURL = `url('https://ipfs.io/ipfs/${author.icon}')`;
 
-    const content = this.props.content.map(block => {
+    const contentElements = content.map(block => {
       if (block.type === "text" && block.text !== "")
         return (
           <div
@@ -111,16 +112,21 @@ class Post extends Component {
       <article className="post center mv2-ns mv0 bg-white br2-ns ba-ns bb b--light-gray">
         <div className="pa3 fw6 w-100 flex items-start justify-between">
           <div className="h2 flex items-center">
-            <div
-              className="pointer h2 w2 br2 cover bg-light-gray"
-              style={{ backgroundImage: iconURL }}
-            />
+            <Link
+              to={`/@${author.id}`}
+              className="link mv0 mr1 f6 fw6 near-black flex flex-row items-start"
+            >
+              <div
+                className="pointer h2 w2 br2 cover bg-light-gray"
+                style={{ backgroundImage: iconURL }}
+              />
+            </Link>
             <div className="ml2">
               <Link
-                to={`/@${this.props.id}`}
+                to={`/@${author.id}`}
                 className="link mv0 mr1 f6 fw6 near-black flex flex-row items-start"
               >
-                {this.props.author}
+                {author.name}
               </Link>
 
               <time className="pointer f6 fw4 silver" dateTime="999999">
@@ -169,9 +175,8 @@ class Post extends Component {
         </div>
 
         <div className="content w-100 pb3 ph3-ns">
-          {content}
+          {contentElements}
         </div>
-
       </article>
     );
   }
