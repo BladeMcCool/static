@@ -17,7 +17,7 @@ export class Image extends Component {
             >
               <img
                 onClick={() => this.setState({ viewing: true })}
-                className={"z-4"}
+                className={"z-999"}
                 alt={this.props.name}
                 src={this.props.src}
               />

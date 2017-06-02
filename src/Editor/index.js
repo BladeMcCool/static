@@ -211,14 +211,11 @@ class MyEditor extends React.Component {
           {this.state.showBackdrop
             ? <div
                 onClick={this.hideBackdrop.bind(this)}
-                className="backdrop z-3 left-0 right-0 bottom-0 top-0 bg-black-90 blurred"
+                className="backdrop left-0 right-0 bottom-0 top-0 bg-black-90 blurred"
               />
             : null}
         </ReactCSSTransitionGroup>
-        <div
-          id="editor"
-          className="z-4 post w-100 relative  b--transparent center"
-        >
+        <div id="editor" className="post w-100 relative  b--transparent center">
           <div className=" center bg-white ba-ns bb b--light-gray br2-ns">
             {
               <div className="pa3 fw6 w-100 flex flex-row items-start justify-between">
