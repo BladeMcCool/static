@@ -123,6 +123,7 @@ export class Audio extends Component {
             this.props.src,
             this.props.src
           ]}
+          preload={false}
           format={["flac", "mp3", "m4a", "x-flac", "x-m4a"]}
           playing={this.state.playing}
           download={this.props.name}
