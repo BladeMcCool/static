@@ -201,7 +201,7 @@ class MyEditor extends React.Component {
           e.preventDefault();
         }}
         onDrop={this.handleDrop.bind(this)}
-        className="relative mt3-ns mb2-ns flex overflow-auto"
+        className="relative z-3 mt3-ns mb2-ns flex overflow-auto"
       >
         <ReactCSSTransitionGroup
           transitionName="editor"
