@@ -7,6 +7,8 @@ import async from "async-es";
 import format from "date-fns/format";
 // import Metascraper from "metascraper";
 
+import AutosizeInput from "react-input-autosize";
+
 import Home from "./Home";
 import Header from "./Header";
 import Post from "./Post";
@@ -555,12 +557,38 @@ export default class App extends Component {
 
                     <div className="center tc ph3">
                       <div className="mv2 center flex items-center justify-center">
-                        <h1 className="flex items-center mv0 link f4 f3 fw6 near-black">
-                          {this.state.profiles[match.params.id].name}
 
-                          {(this.state.profiles[match.params.id] &&
-                            this.state.profiles[match.params.id].following) ||
-                            match.params.id === id
+                        <h1 className="flex items-center  mv0 link f4 fw6 near-black">
+                          <AutosizeInput
+                            className="name nowrap ma0 input bn f4 fw6 near-black"
+                            type="text"
+                            inputStyle={{
+                              padding: 0,
+                              borderRadius: "0.25rem",
+                              paddingTop: "0.25rem",
+                              paddingBottom: "0.25rem",
+                              paddingLeft: "0.5rem",
+
+                              paddingRight: this.state.edit ? "0.5rem" : "0",
+                              fontSize: "1.25rem",
+                              border: this.state.edit
+                                ? "1px solid #EEEEEE"
+                                : "none",
+                              backgroundColor: this.state.edit
+                                ? "white"
+                                : "transparent",
+                              fontWeight: 600
+                            }}
+                            disabled={!this.state.edit}
+                            onChange={this.handleNameEdit.bind(this)}
+                            placeholder="Anonymous"
+                            value={this.state.name}
+                          />
+
+                          {!this.state.edit &&
+                            ((this.state.profiles[match.params.id] &&
+                              this.state.profiles[match.params.id].following) ||
+                              match.params.id === id)
                             ? <span>
                                 <svg
                                   className="pb1"

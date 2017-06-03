@@ -16,6 +16,10 @@ body {
    transform: translate(-50%, -200%);
 }*/
 
+.name input:disabled, textarea:disabled {
+    color: #111;
+}
+
 .mtn1 {
   margin-top: -1px;
 }

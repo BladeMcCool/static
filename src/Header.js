@@ -36,34 +36,22 @@ export default class Header extends Component {
                   backgroundImage: `url('https://ipfs.io/ipfs/${icon}')`
                 }}
               />
+
+              <div className="ml2 flex flex-column">
+                <span className="nowrap pa0 f6 fw6 near-black">
+                  {this.props.name}
+                </span>
+
+                <span
+                  className={`fw5 nowrap ${connectionError ? "offline" : peerCount > 0 ? "connected" : "connecting"} f6`}
+                >
+                  {connectionError
+                    ? "offline"
+                    : peerCount > 0 ? "online" : "connecting..."}
+                </span>
+              </div>
+
             </Link>
-
-            <div className="ml2 flex flex-column">
-              <span className="flex flex-row items-center">
-                <AutosizeInput
-                  className="nowrap pa0 input-reset bn f6 fw6 near-black"
-                  type="text"
-                  inputStyle={{
-                    padding: 0,
-                    border: "none",
-                    fontSize: ".875rem",
-                    fontWeight: 600,
-                    backgroundColor: "transparent"
-                  }}
-                  onChange={onNameEdit}
-                  placeholder="Anonymous"
-                  value={this.props.name}
-                />
-              </span>
-
-              <span
-                className={`fw5 nowrap ${connectionError ? "offline" : peerCount > 0 ? "connected" : "connecting"} f6`}
-              >
-                {connectionError
-                  ? "offline"
-                  : peerCount > 0 ? "online" : "connecting..."}
-              </span>
-            </div>
           </div>
         </div>
         {
