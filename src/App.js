@@ -414,7 +414,7 @@ export default class App extends Component {
                       name="iconPicker"
                       id="iconPicker"
                       className="dn"
-                      onChange={this.props.setIcon}
+                      onChange={this.setIcon}
                     />
 
                     <label
