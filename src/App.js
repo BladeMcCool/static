@@ -400,6 +400,7 @@ export default class App extends Component {
             render={({ match }) =>
               (this.state.profiles[match.params.id]
                 ? <div>
+
                     <input
                       disabled={!this.state.edit}
                       type="file"
@@ -407,6 +408,13 @@ export default class App extends Component {
                       id="backgroundPicker"
                       className="dn"
                       onChange={this.setBackground}
+                    />
+                    <input
+                      type="file"
+                      name="iconPicker"
+                      id="iconPicker"
+                      className="dn"
+                      onChange={this.props.setIcon}
                     />
 
                     <label
@@ -496,7 +504,7 @@ export default class App extends Component {
                             htmlFor="iconPicker"
                             className={
                               this.state.edit
-                                ? "w-100 h-100 pointer bg-black-50 bn w-100 h-100"
+                                ? "flex items-center justify-center w-100 h-100 pointer bg-black-50 bn w-100 h-100"
                                 : ""
                             }
                           >
