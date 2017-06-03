@@ -201,7 +201,7 @@ class MyEditor extends React.Component {
           e.preventDefault();
         }}
         onDrop={this.handleDrop.bind(this)}
-        className="relative z-3 mt3-ns mb2-ns flex overflow-auto"
+        className="z-3 mt3-ns mb2-ns flex overflow-auto"
       >
         <ReactCSSTransitionGroup
           transitionName="editor"
@@ -215,7 +215,10 @@ class MyEditor extends React.Component {
               />
             : null}
         </ReactCSSTransitionGroup>
-        <div id="editor" className="post w-100 relative  b--transparent center">
+        <div
+          id="editor"
+          className="z-1 post w-100 relative  b--transparent center"
+        >
           <div className=" center bg-white ba-ns bb b--light-gray br2-ns">
             {
               <div className="pa3 fw6 w-100 flex flex-row items-start justify-between">

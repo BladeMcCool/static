@@ -44,6 +44,15 @@ export default class App extends Component {
       "Qmf9ETausmHGse2BGjwZBX4QB7iMHR8QsMsubqNTeR8odQ"
     ];
 
+    const version = 2;
+    // Obviously make a migration procedure in the future
+    if (version > localStorage.getItem("version")) {
+      localStorage.removeItem("posts");
+      localStorage.removeItem("profiles");
+    }
+
+    localStorage.setItem("version", version);
+
     const icon = localStorage.getItem("icon") || rand(icons);
     if (!localStorage.getItem("icon")) localStorage.setItem("icon", icon);
 
@@ -65,6 +74,8 @@ export default class App extends Component {
 
     const t = this;
 
+    console.log(node);
+
     node
       .on("start", () => {
         node.pubsub.subscribe("static.network", this.handleMessage);
@@ -75,6 +86,18 @@ export default class App extends Component {
           .then(id => {
             console.log(id);
             this.setState({ id: id.id });
+            if (localStorage.getItem("profiles")) {
+              let newProfiles = t.state.profiles;
+              newProfiles[id.id] = {
+                id: id.id,
+                name: this.state.name,
+                icon: this.state.icon,
+                canopy: this.state.canopy
+              };
+              t.setState({ profiles: newProfiles });
+              // localStorage.setItem("profiles", JSON.stringify(newProfiles));
+            }
+            localStorage.setItem("profiles", {});
           })
           .catch(err => console.error(err));
       })
@@ -425,7 +448,7 @@ export default class App extends Component {
                         className={
                           this.state.profiles[match.params.id] &&
                             this.state.profiles[match.params.id].canopy
-                            ? "pa3  w-100 h5 bg-light-gray cover bg-center"
+                            ? "pa3  w-100 h5-ns h4 bg-light-gray cover bg-center"
                             : "pa3  w-100 h4 bg-near-black cover bg-center"
                         }
                         style={{
