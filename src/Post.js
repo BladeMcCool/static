@@ -37,7 +37,8 @@ class Post extends Component {
 
   render() {
     const { author, content, date_published, verified } = this.props;
-    const iconURL = `url('https://ipfs.io/ipfs/${author.icon}')`;
+
+    const iconURL = author ? `url('https://ipfs.io/ipfs/${author.icon}')` : "#";
 
     const contentElements = content.map(block => {
       if (block.type === "text" && block.text !== "")
