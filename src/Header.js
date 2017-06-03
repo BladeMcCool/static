@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 export default class Header extends Component {
   render() {
-    const { peerCount, icon, onNameEdit, connectionError } = this.props;
+    const { peerCount, icon, onNameEdit, connectionError, id } = this.props;
     return (
       <header className="bg-white w-100 b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
         <div className="flex-auto flex flex-row items-center">
@@ -26,21 +26,17 @@ export default class Header extends Component {
 
         <div className="flex flex-row items-center justify-end">
           <div className="h2 flex flex-row items-center">
-            <input
-              type="file"
-              name="iconPicker"
-              id="iconPicker"
-              className="dn"
-              onChange={this.props.setIcon}
-            />
-            <label htmlFor="iconPicker">
+            <Link
+              to={`/@${id}`}
+              className="link mv0 mr1 f6 fw6 near-black flex flex-row items-start"
+            >
               <div
                 className="pointer h2 w2 br2 cover bg-light-gray"
                 style={{
                   backgroundImage: `url('https://ipfs.io/ipfs/${icon}')`
                 }}
               />
-            </label>
+            </Link>
 
             <div className="ml2 flex flex-column">
               <span className="flex flex-row items-center">
@@ -56,7 +52,7 @@ export default class Header extends Component {
                   }}
                   onChange={onNameEdit}
                   placeholder="Anonymous"
-                  value={this.props.name || ""}
+                  value={this.props.name}
                 />
               </span>
 
@@ -87,7 +83,7 @@ export default class Header extends Component {
 Header.propTypes = {
   peerCount: PropTypes.number.isRequired,
   icon: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   onNameEdit: PropTypes.func.isRequired,
   onToggleEditor: PropTypes.func.isRequired
 };

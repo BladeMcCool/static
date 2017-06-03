@@ -13,11 +13,11 @@ export class Image extends Component {
         {this.state.viewing
           ? <div
               onClick={() => this.setState({ viewing: false })}
-              className="backdrop pa4 z-3 flex items-center justify-center bg-black-90 blurred"
+              className="backdrop pa2-ns z-3 flex items-center justify-center bg-black-90 blurred"
             >
               <img
                 onClick={() => this.setState({ viewing: true })}
-                className={"z-999"}
+                className={"z-999 mw-100 mh-100"}
                 alt={this.props.name}
                 src={this.props.src}
               />
@@ -116,8 +116,15 @@ export class Audio extends Component {
       >
         <ReactHowler
           ref="player"
-          src={[this.props.src]}
-          format={["flac"]}
+          src={[
+            this.props.src,
+            this.props.src,
+            this.props.src,
+            this.props.src,
+            this.props.src
+          ]}
+          html5={true}
+          format={["flac", "mp3", "m4a", "x-flac", "x-m4a"]}
           playing={this.state.playing}
           download={this.props.name}
           onLoad={this.handleOnLoad}

@@ -16,7 +16,13 @@ export default class Home extends Component {
   }
 
   render() {
-    const { posts, peerCount, onPublish, connectionError } = this.props;
+    const {
+      profiles,
+      posts,
+      peerCount,
+      onPublish,
+      connectionError
+    } = this.props;
     return (
       <main
         onDragOver={this.handleDragOver.bind(this)}
@@ -37,9 +43,15 @@ export default class Home extends Component {
           return (
             <Post
               key={post.author.id + post.date_published}
-              author={post.author}
+              author={profiles[post.author.id]}
               content={post.content}
               date_published={post.date_published}
+              verified={
+                (profiles &&
+                  profiles[post.author.id] &&
+                  profiles[post.author.id].following) ||
+                  post.author.id === this.props.id
+              }
             />
           );
         })}

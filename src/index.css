@@ -16,6 +16,22 @@ body {
    transform: translate(-50%, -200%);
 }*/
 
+.mtn1 {
+  margin-top: -1px;
+}
+
+.pl1px {
+  padding-left: 1px;
+}
+
+.mh-100 {
+  max-height: 100%;
+}
+
+.m2-100 {
+  max-width: 100%;
+}
+
 .pen {
   pointer-events: none;
 }

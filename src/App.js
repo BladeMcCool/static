@@ -13,7 +13,6 @@ import Post from "./Post";
 
 import { IMAGE_TYPES, AUDIO_TYPES } from "./Editor/constants";
 
-// const IPFS = require("ipfs");
 // import IPFS from "ipfs";
 const node = new window.Ipfs({
   EXPERIMENTAL: {
@@ -33,6 +32,7 @@ export default class App extends Component {
     this.handleMessage = this.handleMessage.bind(this);
     this.toggleEditor = this.toggleEditor.bind(this);
     this.setIcon = this.setIcon.bind(this);
+    this.setBackground = this.setBackground.bind(this);
 
     const name = localStorage.getItem("name");
     const icons = [
@@ -285,6 +285,46 @@ export default class App extends Component {
     });
   }
 
+  toggleEdit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.setState({ edit: !this.state.edit });
+  }
+
+  toggleFollow(id) {
+    if (!this.state.profiles[id])
+      return console.error("Excpected peer in locall db");
+
+    let newProfiles = this.state.profiles;
+    newProfiles[id].following = !newProfiles[id].following;
+    this.setState({ profiles: newProfiles });
+    localStorage.setItem("profiles", JSON.stringify(newProfiles));
+  }
+
+  setBackground(event) {
+    const files = event.target.files || event.dataTransfer.files;
+    if (!files || files.length !== 1) return;
+    const reader = new FileReader();
+    const t = this;
+    reader.onload = () => {
+      node.files.add(new Buffer(reader.result), function(err, res) {
+        if (err || res === null || res.length === 0) {
+          return console.error(err);
+        }
+        const hash = res.pop().hash;
+        t.setState({ canopy: hash });
+        localStorage.setItem("canopy", hash);
+
+        let newProfiles = t.state.profiles;
+        newProfiles[t.state.id].canopy = hash;
+        t.setState({ profiles: newProfiles });
+        localStorage.setItem("profiles", JSON.stringify(newProfiles));
+      });
+    };
+    if (IMAGE_TYPES.indexOf(files[0].type) === -1) return;
+    reader.readAsArrayBuffer(files[0]);
+  }
+
   setIcon(event) {
     const files = event.target.files || event.dataTransfer.files;
     if (!files || files.length !== 1) return;
@@ -298,6 +338,11 @@ export default class App extends Component {
         const hash = res.pop().hash;
         t.setState({ icon: hash });
         localStorage.setItem("icon", hash);
+
+        let newProfiles = t.state.profiles;
+        newProfiles[t.state.id].icon = hash;
+        t.setState({ profiles: newProfiles });
+        localStorage.setItem("profiles", JSON.stringify(newProfiles));
       });
     };
     if (IMAGE_TYPES.indexOf(files[0].type) === -1) return;
@@ -314,7 +359,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { peers, posts, name, icon, id } = this.state;
+    const { peers, profiles, posts, name, icon, id } = this.state;
     return (
       <Router>
         <div
@@ -341,6 +386,7 @@ export default class App extends Component {
               <Home
                 peerCount={peers.length}
                 posts={posts}
+                profiles={profiles}
                 connectionError={this.state.error}
                 onPublish={this.publish}
                 icon={icon}
@@ -354,33 +400,141 @@ export default class App extends Component {
             render={({ match }) =>
               (this.state.profiles[match.params.id]
                 ? <div>
-                    <div
-                      className={
-                        this.state.profiles[match.params.id] &&
-                          this.state.profiles[match.params.id].canopy
-                          ? "w-100 h5 bg-light-gray flex flex-row items-center cover bg-center"
-                          : "w-100 h4 bg-near-black flex flex-row items-center cover bg-center"
-                      }
-                      style={{
-                        backgroundImage: this.state.profiles[match.params.id] &&
-                          this.state.profiles[match.params.id].canopy
-                          ? `url('https://ipfs.io/ipfs/${this.state.profiles[match.params.id].canopy}`
-                          : "none"
-                      }}
+                    <input
+                      disabled={!this.state.edit}
+                      type="file"
+                      name="backgroundPicker"
+                      id="backgroundPicker"
+                      className="dn"
+                      onChange={this.setBackground}
                     />
+
+                    <label
+                      htmlFor="backgroundPicker"
+                      className={this.state.edit ? "pointer" : ""}
+                    >
+                      <div
+                        className={
+                          this.state.profiles[match.params.id] &&
+                            this.state.profiles[match.params.id].canopy
+                            ? "pa3  w-100 h5 bg-light-gray cover bg-center"
+                            : "pa3  w-100 h4 bg-near-black cover bg-center"
+                        }
+                        style={{
+                          height: this.state.edit ||
+                            (this.state.profiles[match.params.id] &&
+                              this.state.profiles[match.params.id].canopy)
+                            ? "16rem"
+                            : "8rem",
+                          backgroundImage: this.state.profiles[
+                            match.params.id
+                          ] && this.state.profiles[match.params.id].canopy
+                            ? `url('https://ipfs.io/ipfs/${this.state.profiles[match.params.id].canopy}`
+                            : "none"
+                        }}
+                      >
+
+                        <div className="flex justify-end items-start">
+                          {match.params.id === this.state.id
+                            ? this.state.edit
+                                ? // if user profile, show edit button
+                                  <div>
+                                    <button
+                                      onClick={this.toggleEdit.bind(this)}
+                                      className="btn mr3 pointer bg-white near-black near-black bn br1 pv2 ph3 f6 fw6"
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      onClick={this.toggleEdit.bind(this)}
+                                      className="btn pointer bg-white bright-blue near-black bn br1 pv2 ph3 f6 fw6"
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                : <button
+                                    onClick={this.toggleEdit.bind(this)}
+                                    className="btn pointer bg-white near-black bn br1 pv2 ph3 f6 fw6"
+                                  >
+                                    Edit profile
+                                  </button>
+                            : // or just the follow button
+                              <button
+                                onClick={() =>
+                                  this.toggleFollow(match.params.id)}
+                                className="btn pointer bg-white near-black bn br1 pv2 ph3 f6 fw6"
+                              >
+                                {this.state.profiles[match.params.id] &&
+                                  this.state.profiles[match.params.id].following
+                                  ? "Following"
+                                  : "Follow"}
+                              </button>}
+                        </div>
+                        {this.state.edit
+                          ? <p className="pt4 f4 fw6 tc center white">
+                              {this.state.profiles[match.params.id] &&
+                                this.state.profiles[match.params.id].canopy
+                                ? "Change your background photo"
+                                : "Add a background photo"}
+                            </p>
+                          : null}
+
+                      </div>
+
+                    </label>
+
                     <div
-                      className="mtn5 center ba b--white bw1 h4 w4 minw4 br2 cover bg-light-gray "
+                      className="mtn5 flex items-center justify-center center ba b--white bw1 h4 w4 minw4 br2 cover bg-light-gray"
                       style={{
                         backgroundImage: this.state.profiles[match.params.id]
                           ? `url('https://ipfs.io/ipfs/${this.state.profiles[match.params.id].icon}`
                           : "none"
                       }}
-                    />
+                    >
+                      {this.state.edit
+                        ? <label
+                            htmlFor="iconPicker"
+                            className={
+                              this.state.edit
+                                ? "w-100 h-100 pointer bg-black-50 bn w-100 h-100"
+                                : ""
+                            }
+                          >
+
+                            <p className="tc btn white  pointer bn br1 pv2 ph2 f6 fw6">
+                              {"Add a profile photo"}
+                            </p>
+
+                          </label>
+                        : null}
+                    </div>
 
                     <div className="center tc ph3">
-                      <h1 className="mv2 lh-title link f4 f3 fw6 near-black">
-                        {this.state.profiles[match.params.id].name}
-                      </h1>
+                      <div className="mv2 center flex items-center justify-center">
+                        <h1 className="flex items-center mv0 link f4 f3 fw6 near-black">
+                          {this.state.profiles[match.params.id].name}
+
+                          {(this.state.profiles[match.params.id] &&
+                            this.state.profiles[match.params.id].following) ||
+                            match.params.id === id
+                            ? <span>
+                                <svg
+                                  className="pb1"
+                                  fill="#5856D6"
+                                  width="18px"
+                                  height="18px"
+                                  viewBox="0 0 17 17"
+                                >
+                                  <path
+                                    d="M16.67,8.06 L15.59,6.72 C15.42,6.5 15.31,6.24 15.28,5.95 L15.09,4.25 C15.01,3.55 14.46,3 13.76,2.92 L12.06,2.73 C11.76,2.7 11.5,2.57 11.28,2.4 L9.94,1.32 C9.39,0.88 8.61,0.88 8.06,1.32 L6.72,2.4 C6.5,2.57 6.24,2.68 5.95,2.71 L4.25,2.9 C3.55,2.98 3,3.53 2.92,4.23 L2.73,5.93 C2.7,6.23 2.57,6.49 2.4,6.71 L1.32,8.05 C0.88,8.6 0.88,9.38 1.32,9.93 L2.4,11.27 C2.57,11.49 2.68,11.75 2.71,12.04 L2.9,13.74 C2.98,14.44 3.53,14.99 4.23,15.07 L5.93,15.26 C6.23,15.29 6.49,15.42 6.71,15.59 L8.05,16.67 C8.6,17.11 9.38,17.11 9.93,16.67 L11.27,15.59 C11.49,15.42 11.75,15.31 12.04,15.28 L13.74,15.09 C14.44,15.01 14.99,14.46 15.07,13.76 L15.26,12.06 C15.29,11.76 15.42,11.5 15.59,11.28 L16.67,9.94 C17.11,9.39 17.11,8.61 16.67,8.06 L16.67,8.06 Z M7.5,13 L4,9.5 L5.5,8 L7.5,10 L12.5,5 L14,6.55 L7.5,13 L7.5,13 Z"
+                                    id="Shape"
+                                    stroke="none"
+                                  />
+                                </svg>
+                              </span>
+                            : null}
+                        </h1>
+                      </div>
 
                       <h2 className="mv2 f6 fw4 lh-copy silver break-all">
                         @
@@ -404,7 +558,7 @@ export default class App extends Component {
                           return (
                             <Post
                               key={post.author.id + post.date_published}
-                              author={post.author}
+                              author={profiles[post.author.id]}
                               content={post.content}
                               date_published={post.date_published}
                             />
