@@ -53,6 +53,8 @@ export default class App extends Component {
 
     localStorage.setItem("version", version);
 
+    const id = localStorage.getItem("id");
+
     const icon = localStorage.getItem("icon") || rand(icons);
     if (!localStorage.getItem("icon")) localStorage.setItem("icon", icon);
 
@@ -63,6 +65,7 @@ export default class App extends Component {
     const profiles = JSON.parse(localStorage.getItem("profiles")) || {};
 
     this.state = {
+      id,
       name,
       icon,
       posts,
@@ -86,18 +89,22 @@ export default class App extends Component {
           .then(id => {
             console.log(id);
             this.setState({ id: id.id });
-            if (localStorage.getItem("profiles")) {
-              let newProfiles = t.state.profiles;
+            localStorage.setItem("id", id.id);
+
+            if (
+              !localStorage.getItem("profiles") ||
+              localStorage.getItem("profiles") === {}
+            ) {
+              let newProfiles = {};
               newProfiles[id.id] = {
                 id: id.id,
-                name: this.state.name,
+                name: this.state.name || "Anonymous",
                 icon: this.state.icon,
                 canopy: this.state.canopy
               };
               t.setState({ profiles: newProfiles });
-              // localStorage.setItem("profiles", JSON.stringify(newProfiles));
+              localStorage.setItem("profiles", JSON.stringify(newProfiles));
             }
-            localStorage.setItem("profiles", {});
           })
           .catch(err => console.error(err));
       })
