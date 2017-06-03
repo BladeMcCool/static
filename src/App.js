@@ -388,6 +388,15 @@ export default class App extends Component {
     // this.refs.editor.hideBackdrop();
   }
 
+  handleNameEdit(event) {
+    this.setState({ name: event.target.value });
+    localStorage.setItem("name", event.target.value);
+    let newProfiles = this.state.profiles;
+    newProfiles[this.state.id].name = event.target.value;
+    this.setState({ profiles: newProfiles });
+    localStorage.setItem("profiles", JSON.stringify(newProfiles));
+  }
+
   render() {
     const { peers, profiles, posts, name, icon, id } = this.state;
     return (
@@ -404,10 +413,7 @@ export default class App extends Component {
             id={id}
             onToggleEditor={this.toggleEditor}
             setIcon={this.setIcon}
-            onNameEdit={event => {
-              this.setState({ name: event.target.value });
-              localStorage.setItem("name", event.target.value);
-            }}
+            onNameEdit={this.handleNameEdit.bind(this)}
           />
           <Route
             exact
