@@ -442,7 +442,9 @@ export default class App extends Component {
                 ? <div>
 
                     <input
-                      disabled={!this.state.edit}
+                      disabled={
+                        !this.state.edit && match.params.id === this.state.id
+                      }
                       type="file"
                       name="backgroundPicker"
                       id="backgroundPicker"
@@ -459,7 +461,11 @@ export default class App extends Component {
 
                     <label
                       htmlFor="backgroundPicker"
-                      className={this.state.edit ? "pointer" : ""}
+                      className={
+                        this.state.edit && match.params.id === this.state.id
+                          ? "pointer"
+                          : ""
+                      }
                     >
                       <div
                         className={
@@ -469,7 +475,8 @@ export default class App extends Component {
                             : "pa3  w-100 h4 bg-near-black cover bg-center"
                         }
                         style={{
-                          height: this.state.edit ||
+                          height: (this.state.edit &&
+                            match.params.id === this.state.id) ||
                             (this.state.profiles[match.params.id] &&
                               this.state.profiles[match.params.id].canopy)
                             ? "16rem"
@@ -484,7 +491,8 @@ export default class App extends Component {
 
                         <div className="flex justify-end items-start">
                           {match.params.id === this.state.id
-                            ? this.state.edit
+                            ? this.state.edit &&
+                                match.params.id === this.state.id
                                 ? // if user profile, show edit button
                                   <div>
                                     <button
@@ -518,7 +526,7 @@ export default class App extends Component {
                                   : "Follow"}
                               </button>}
                         </div>
-                        {this.state.edit
+                        {this.state.edit && match.params.id === this.state.id
                           ? <p className="pt4 f4 fw6 tc center white">
                               {this.state.profiles[match.params.id] &&
                                 this.state.profiles[match.params.id].canopy
@@ -539,11 +547,12 @@ export default class App extends Component {
                           : "none"
                       }}
                     >
-                      {this.state.edit
+                      {this.state.edit && match.params.id === this.state.id
                         ? <label
                             htmlFor="iconPicker"
                             className={
-                              this.state.edit
+                              this.state.edit &&
+                                match.params.id === this.state.id
                                 ? "flex items-center justify-center w-100 h-100 pointer bg-black-50 bn w-100 h-100"
                                 : ""
                             }
@@ -571,23 +580,32 @@ export default class App extends Component {
                               paddingBottom: "0.25rem",
                               paddingLeft: "0.5rem",
 
-                              paddingRight: this.state.edit ? "0.5rem" : "0",
+                              paddingRight: this.state.edit &&
+                                match.params.id === this.state.id
+                                ? "0.5rem"
+                                : "0",
                               fontSize: "1.25rem",
-                              border: this.state.edit
+                              border: this.state.edit &&
+                                match.params.id === this.state.id
                                 ? "1px solid #EEEEEE"
                                 : "none",
-                              backgroundColor: this.state.edit
+                              backgroundColor: this.state.edit &&
+                                match.params.id === this.state.id
                                 ? "white"
                                 : "transparent",
                               fontWeight: 600
                             }}
-                            disabled={!this.state.edit}
+                            disabled={
+                              !this.state.edit &&
+                                match.params.id !== this.state.id
+                            }
                             onChange={this.handleNameEdit.bind(this)}
                             placeholder="Anonymous"
                             value={this.state.name}
                           />
 
                           {!this.state.edit &&
+                            match.params.id !== this.state.id &&
                             ((this.state.profiles[match.params.id] &&
                               this.state.profiles[match.params.id].following) ||
                               match.params.id === id)
