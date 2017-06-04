@@ -112,7 +112,7 @@ export class Audio extends Component {
           e.preventDefault();
           this.handleToggle();
         }}
-        className="relative pointer overflow-hidden block mv2 flex items-center cover ba b--light-gray overflow-hidden br2"
+        className="relative z-1 pointer overflow-hidden block mv2 flex items-center cover ba b--light-gray overflow-hidden br2"
       >
         <ReactHowler
           ref="player"
