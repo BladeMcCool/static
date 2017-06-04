@@ -39,7 +39,7 @@ export default class Header extends Component {
 
               <div className="ml2 flex flex-column">
                 <span className="nowrap pa0 f6 fw6 near-black">
-                  {this.props.name}
+                  {this.props.name || "Anonymous"}
                 </span>
 
                 <span

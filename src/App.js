@@ -420,18 +420,20 @@ export default class App extends Component {
           <Route
             exact
             path="/"
-            render={props => (
-              <Home
-                peerCount={peers.length}
-                posts={posts}
-                profiles={profiles}
-                connectionError={this.state.error}
-                onPublish={this.publish}
-                icon={icon}
-                id={id}
-                name={name}
-              />
-            )}
+            render={props => {
+              return (
+                <Home
+                  peerCount={peers.length}
+                  posts={posts}
+                  profiles={profiles}
+                  connectionError={this.state.error}
+                  onPublish={this.publish}
+                  icon={icon}
+                  id={id}
+                  name={name}
+                />
+              );
+            }}
           />
           <Route
             path="/@:id"

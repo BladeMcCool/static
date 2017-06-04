@@ -127,7 +127,7 @@ class Post extends Component {
                 to={`/@${author.id}`}
                 className="link mv0 mr1 f6 fw6 near-black flex flex-row items-center"
               >
-                {author.name}
+                {author.name || "Anonymous"}
                 {verified
                   ? <span>
                       <svg
