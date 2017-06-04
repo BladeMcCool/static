@@ -601,7 +601,12 @@ export default class App extends Component {
                             }
                             onChange={this.handleNameEdit.bind(this)}
                             placeholder="Anonymous"
-                            value={this.state.name}
+                            value={
+                              this.state.edit &&
+                                match.params.id === this.state.id
+                                ? this.state.name
+                                : this.state.profiles[match.params.id].name
+                            }
                           />
 
                           {!this.state.edit &&
