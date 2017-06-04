@@ -443,7 +443,7 @@ export default class App extends Component {
 
                     <input
                       disabled={
-                        !this.state.edit && match.params.id === this.state.id
+                        !this.state.edit || match.params.id !== this.state.id
                       }
                       type="file"
                       name="backgroundPicker"
@@ -609,11 +609,9 @@ export default class App extends Component {
                             }
                           />
 
-                          {!this.state.edit &&
-                            match.params.id !== this.state.id &&
-                            ((this.state.profiles[match.params.id] &&
-                              this.state.profiles[match.params.id].following) ||
-                              match.params.id === id)
+                          {(this.state.profiles[match.params.id] &&
+                            this.state.profiles[match.params.id].following) ||
+                            (match.params.id === id && !this.state.edit)
                             ? <span>
                                 <svg
                                   className="pb1"
