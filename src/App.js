@@ -9,6 +9,8 @@ import format from "date-fns/format";
 
 import AutosizeInput from "react-input-autosize";
 
+import isIPFS from "is-ipfs";
+
 import Home from "./Home";
 import Header from "./Header";
 import Post from "./Post";
@@ -46,15 +48,6 @@ export default class App extends Component {
       "Qmf9ETausmHGse2BGjwZBX4QB7iMHR8QsMsubqNTeR8odQ"
     ];
 
-    const version = 2;
-    // Obviously make a migration procedure in the future
-    if (version > localStorage.getItem("version")) {
-      localStorage.removeItem("posts");
-      localStorage.removeItem("profiles");
-    }
-
-    localStorage.setItem("version", version);
-
     const id = localStorage.getItem("id");
 
     const icon = localStorage.getItem("icon") || rand(icons);
@@ -65,6 +58,18 @@ export default class App extends Component {
 
     const posts = JSON.parse(localStorage.getItem("posts")) || [];
     const profiles = JSON.parse(localStorage.getItem("profiles")) || {};
+
+    const version = 2;
+    // Obviously make a migration procedure in the future
+    if (version > localStorage.getItem("version")) {
+      if (version === 3) {
+      } else {
+        localStorage.removeItem("posts");
+        localStorage.removeItem("profiles");
+      }
+    }
+
+    localStorage.setItem("version", version);
 
     this.state = {
       id,
@@ -78,8 +83,6 @@ export default class App extends Component {
     };
 
     const t = this;
-
-    console.log(node);
 
     node
       .on("start", () => {
@@ -100,7 +103,7 @@ export default class App extends Component {
               let newProfiles = {};
               newProfiles[id.id] = {
                 id: id.id,
-                name: this.state.name || "Anonymous",
+                name: this.state.name,
                 icon: this.state.icon,
                 canopy: this.state.canopy
               };
@@ -111,6 +114,28 @@ export default class App extends Component {
           .catch(err => console.error(err));
       })
       .on("error", error => {
+        node
+          .id()
+          .then(id => {
+            this.setState({ id: id.id });
+            localStorage.setItem("id", id.id);
+            if (
+              !localStorage.getItem("profiles") ||
+              localStorage.getItem("profiles") === {}
+            ) {
+              let newProfiles = {};
+              newProfiles[id.id] = {
+                id: id.id,
+                name: this.state.name,
+                icon: this.state.icon,
+                canopy: this.state.canopy
+              };
+              t.setState({ profiles: newProfiles });
+              localStorage.setItem("profiles", JSON.stringify(newProfiles));
+            }
+          })
+          .catch(err => console.error(err));
+
         t.setState({ error });
       });
   }
@@ -129,9 +154,9 @@ export default class App extends Component {
     return;
   }
 
-  handleMessage(msg) {
-    // TODO first make sure data is correct length of hash!!
-    const hash = msg.data.toString();
+  handleHash(hash) {
+    // Ignore posts we have seen
+    if (this.postByHash(hash).length) return;
 
     node.files.cat(hash, (err, stream) => {
       var res = "";
@@ -152,7 +177,12 @@ export default class App extends Component {
           return console.error("Could not parse post", err);
         }
 
-        const { author } = post;
+        console.log(post);
+
+        const { author, previous } = post;
+
+        post.hash = hash;
+
         // if (this.state.profiles[author.id]) {
         // const localProfile = this.state.profiles[author.id];
         // display a warning if a trusted user has changed their name
@@ -170,14 +200,37 @@ export default class App extends Component {
         this.setState({ posts: [post, ...this.state.posts] });
         localStorage.setItem("posts", JSON.stringify(this.state.posts));
         localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
+
+        // Do some more safety checks here obviously
+        if (isIPFS.multihash(previous)) {
+          this.handleHash(previous);
+        }
       });
     });
+  }
+
+  postByHash(hash) {
+    return this.state.posts.filter(post => post.hash === hash);
+  }
+
+  handleMessage(msg) {
+    // TODO first make sure data is correct length of hash!!
+    const hash = msg.data.toString();
+
+    this.handleHash(hash);
   }
 
   toggleEditor(event) {
     this.setState({
       showEditor: !this.state.showEditor
     });
+  }
+
+  lastPost() {
+    const selfPosts = this.state.posts.filter(
+      post => post.author.id === this.state.id
+    );
+    return selfPosts.length ? selfPosts[0].hash : null;
   }
 
   publish(blocks) {
@@ -288,13 +341,16 @@ export default class App extends Component {
             date_published: format(
               new Date(Date.now()),
               "YYYY-MM-DDTHH:mm:ss.SSSZ"
-            )
+            ),
+            date: ~~(Date.now() / 1000),
+            previous: this.lastPost()
           })
         ),
         (err, res) => {
           if (err || !res) {
             console.error("Did not add the IPFS file.", err);
           } else {
+            console.log(res);
             res.forEach(file => {
               node.pubsub.publish(
                 "static.network",
@@ -567,7 +623,7 @@ export default class App extends Component {
                     </div>
 
                     <div className="center tc ph3">
-                      <div className="mv2 center flex items-center justify-center">
+                      <div className="mv1 center flex items-center justify-center">
 
                         <h1 className="flex items-center  mv0 link f4 fw6 near-black">
                           <AutosizeInput
@@ -585,10 +641,7 @@ export default class App extends Component {
                                 ? "0.5rem"
                                 : "0",
                               fontSize: "1.25rem",
-                              border: this.state.edit &&
-                                match.params.id === this.state.id
-                                ? "1px solid #EEEEEE"
-                                : "none",
+                              border: "none",
                               backgroundColor: this.state.edit &&
                                 match.params.id === this.state.id
                                 ? "white"
@@ -631,7 +684,7 @@ export default class App extends Component {
                         </h1>
                       </div>
 
-                      <h2 className="mv2 f6 fw4 lh-copy silver break-all">
+                      <h2 className="mv0 f6 fw4 lh-copy light-silver break-all">
                         @
                         <span className="nowrap">
                           {match.params.id.substr(0, 23)}

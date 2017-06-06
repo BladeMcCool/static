@@ -39,7 +39,7 @@ export default class Home extends Component {
           onClose={this.toggleEditor}
           peerCount={peerCount}
         />
-        {posts.map(post => {
+        {posts.sort((a, b) => b.date - a.date).map(post => {
           return (
             <Post
               key={post.author.id + post.date_published}

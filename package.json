@@ -10,6 +10,7 @@
     "draftjs-to-markdown": "^0.4.2",
     "howler": "^2.0.3",
     "ipfs": "^0.24.1",
+    "is-ipfs": "^0.3.0",
     "markdown-to-jsx": "^5.3.3",
     "metascraper": "^1.0.6",
     "moment": "^2.18.1",
