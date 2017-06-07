@@ -494,8 +494,11 @@ export default class App extends Component {
           />
           <Route
             path="/@:id"
-            render={({ match }) =>
-              (this.state.profiles[match.params.id]
+            render={({ match }) => {
+              const filteredPosts = posts.filter(
+                post => post.author.id === match.params.id
+              );
+              return this.state.profiles[match.params.id]
                 ? <div className="bg-transparent-ns bg-white">
 
                     <input
@@ -587,7 +590,7 @@ export default class App extends Component {
                                 </button>}
                           </div>
                           {this.state.edit && match.params.id === this.state.id
-                            ? <p className="pt4-ns pt2 mt0 f4 fw6 tc center white">
+                            ? <p className="pt5-ns pt2 mt0 f4 fw6 tc center white">
                                 {this.state.profiles[match.params.id] &&
                                   this.state.profiles[match.params.id].canopy
                                   ? "Change your background photo"
@@ -703,26 +706,39 @@ export default class App extends Component {
                       </p>
 
                     </div>
-                    <div className="mt4 mb5">
-                      {posts
-                        .filter(post => post.author.id === match.params.id)
-                        .map(post => {
-                          return (
-                            <Post
-                              key={post.author.id + post.date}
-                              author={profiles[post.author.id]}
-                              content={post.content}
-                              date={post.date}
-                            />
-                          );
-                        })}
+                    <div className="mt4 mw5 near-black center flex flex-row items-center justify-around">
+                      <div>
+                        <h3 className="mv0 tc"> {filteredPosts.length}</h3>
+                        <span className="gray f7 ttu">Posts</span>
+                      </div>
+                      <div>
+                        <h3 className="mv0 gray tc">0</h3>
+                        <span className="gray f7 ttu">Following</span>
+                      </div>
+                      <div>
+                        <h3 className="mv0 gray tc">0</h3>
+                        <span className="gray f7 ttu">Likes</span>
+                      </div>
+                    </div>
+                    <div className="mt3 mb5">
+                      {filteredPosts.map(post => {
+                        return (
+                          <Post
+                            key={post.author.id + post.date}
+                            author={profiles[post.author.id]}
+                            content={post.content}
+                            date={post.date}
+                          />
+                        );
+                      })}
                     </div>
                   </div>
                 : <div className="bg-bright-blue pa3 flex items-center justify-center">
                     <span className="white bg-bright-blue wrap-all">
                       This will work when js-ipfs supports ipns...
                     </span>
-                  </div>)}
+                  </div>;
+            }}
           />
 
         </div>

@@ -267,15 +267,18 @@ body {
   background-color: #F5F5F6;
 }
 .star:active svg,
-.republish:active svg {
+.republish:active svg,
+.reply:active svg  {
   fill: #AAA;
   border: none !important;
 }
 
 .star:hover svg { fill: #FFB700; }
 .star:focus svg { fill: #FFB700; }
-.republish:hover svg { fill: #19A974 !important; }
+.republish:hover svg { fill: #19A974 }
 .republish:focus svg { fill: #19A974; }
+.reply:hover svg { fill: #0433ff }
+.reply:focus svg { fill: #0433ff; }
 /*
 .download { outline: none; }
 .download:hover svg { fill: #0433ff !important; }

@@ -13,11 +13,11 @@ export class Image extends Component {
         {this.state.viewing
           ? <div
               onClick={() => this.setState({ viewing: false })}
-              className="backdrop pa2-ns z-3 flex items-center justify-center bg-black-90 blurred"
+              className="backdrop pa2-ns z-999 flex items-center justify-center bg-black-90 blurred"
             >
               <img
                 onClick={() => this.setState({ viewing: true })}
-                className={"z-999 mw-100 mh-100"}
+                className={" mw-100 mh-100"}
                 alt={this.props.name}
                 src={this.props.src}
               />

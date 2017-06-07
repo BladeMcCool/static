@@ -137,6 +137,23 @@ class Post extends Component {
           <div className="fw6 flex items-center justify-end">
 
             <button
+              ref="reply"
+              className="hover-dark-green reply overflow-visible pointer pa0 bg-transparent bn mr3"
+              aria-label="Reply"
+              onClick={event => {
+                this.refs.reply.blur();
+              }}
+            >
+              <svg fill="#AAA" width="14px" height="14px" viewBox="0 0 14 14">
+                <path
+                  d="M6,3.5 C9.92,3.94 14,6.625 14,13.5 C11.688,8.438 9.25,7.5 6,7.5 L6,11 L0.5,5.5 L6,0 L6,3.5 Z"
+                  id="Shape"
+                  stroke="none"
+                />
+              </svg>
+            </button>
+
+            <button
               ref="republish"
               className="hover-dark-green republish overflow-visible pointer pa0 bg-transparent bn mr3"
               aria-label="Republish"
@@ -159,7 +176,7 @@ class Post extends Component {
             >
               <svg
                 className="w1 h1"
-                viewBox="0 0 14 13"
+                viewBox="0 0 14 14"
                 fill={this.state.starred ? "#FFB700" : "#AAA"}
               >
                 <polygon
