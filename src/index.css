@@ -16,6 +16,19 @@ body {
    transform: translate(-50%, -200%);
 }*/
 
+.dimmed:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: linear-gradient(rgba(17, 17, 17, 0),rgba(17, 17, 17, 1) 99%);
+  /*background: radial-gradient(rgba(0, 0, 0, 0.25), #111);*/
+  opacity: 1;
+}
+
+
 .name input:disabled, textarea:disabled {
     color: #111;
 }
@@ -44,8 +57,19 @@ body {
   word-break: break-all;
 }
 
-.mtn5 {
+.mtn3 {
+  margin-top: -2rem;
+}
+
+@media screen and (min-width:32em) {
+
+.bg-transparent-ns {
+  background-color: transparent;
+}
+
+.mtn4-ns {
   margin-top: -4rem;
+}
 }
 
 .mt35 {

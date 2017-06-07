@@ -45,7 +45,7 @@ export default class Home extends Component {
               key={post.author.id + post.date_published}
               author={profiles[post.author.id]}
               content={post.content}
-              date_published={post.date_published}
+              date={post.date}
               verified={
                 (profiles &&
                   profiles[post.author.id] &&

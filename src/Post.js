@@ -2,29 +2,12 @@ import React, { Component } from "react";
 
 import { Link } from "react-router-dom";
 import Markdown from "markdown-to-jsx";
-import moment from "moment";
+
+import Clock from "./Clock";
 
 // This should all be automatic
 import { Image, Audio, Video, File } from "./Editor/Blocks";
 import { IMAGE_TYPES, AUDIO_TYPES, VIDEO_TYPES } from "./Editor/constants";
-
-moment.updateLocale("en", {
-  relativeTime: {
-    future: "in %s",
-    past: "%s",
-    s: "%ds",
-    m: "1m",
-    mm: "%dm",
-    h: "1h",
-    hh: "%dh",
-    d: "1d",
-    dd: "%dd",
-    M: "1m",
-    MM: "%dm",
-    y: "1y",
-    yy: "%dy"
-  }
-});
 
 class Post extends Component {
   constructor(props) {
@@ -36,7 +19,7 @@ class Post extends Component {
   }
 
   render() {
-    const { author, content, date_published, verified } = this.props;
+    const { author, content, date, verified } = this.props;
 
     const iconURL = author ? `url('https://ipfs.io/ipfs/${author.icon}')` : "#";
 
@@ -147,9 +130,7 @@ class Post extends Component {
                   : null}
               </Link>
 
-              <time className="pointer f6 fw4 silver" dateTime="999999">
-                {moment(date_published).fromNow()}
-              </time>
+              <Clock date={date} />
             </div>
           </div>
 

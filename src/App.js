@@ -9,7 +9,7 @@ import format from "date-fns/format";
 
 import AutosizeInput from "react-input-autosize";
 
-import isIPFS from "is-ipfs";
+// import isIPFS from "is-ipfs";
 
 import Home from "./Home";
 import Header from "./Header";
@@ -48,6 +48,19 @@ export default class App extends Component {
       "Qmf9ETausmHGse2BGjwZBX4QB7iMHR8QsMsubqNTeR8odQ"
     ];
 
+    const version = 3;
+    // Obviously make a migration procedure in the future
+    if (version > localStorage.getItem("version")) {
+      if (version === 3) {
+        localStorage.removeItem("posts");
+      } else {
+        localStorage.removeItem("posts");
+        localStorage.removeItem("profiles");
+      }
+    }
+
+    localStorage.setItem("version", version);
+
     const id = localStorage.getItem("id");
 
     const icon = localStorage.getItem("icon") || rand(icons);
@@ -58,18 +71,6 @@ export default class App extends Component {
 
     const posts = JSON.parse(localStorage.getItem("posts")) || [];
     const profiles = JSON.parse(localStorage.getItem("profiles")) || {};
-
-    const version = 2;
-    // Obviously make a migration procedure in the future
-    if (version > localStorage.getItem("version")) {
-      if (version === 3) {
-      } else {
-        localStorage.removeItem("posts");
-        localStorage.removeItem("profiles");
-      }
-    }
-
-    localStorage.setItem("version", version);
 
     this.state = {
       id,
@@ -202,9 +203,9 @@ export default class App extends Component {
         localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
 
         // Do some more safety checks here obviously
-        if (isIPFS.multihash(previous)) {
-          this.handleHash(previous);
-        }
+        // if (isIPFS.multihash(previous)) {
+        if (previous && previous.length == 46) this.handleHash(previous);
+        // }
       });
     });
   }
@@ -342,7 +343,7 @@ export default class App extends Component {
               new Date(Date.now()),
               "YYYY-MM-DDTHH:mm:ss.SSSZ"
             ),
-            date: ~~(Date.now() / 1000),
+            date: Date.now(),
             previous: this.lastPost()
           })
         ),
@@ -495,7 +496,7 @@ export default class App extends Component {
             path="/@:id"
             render={({ match }) =>
               (this.state.profiles[match.params.id]
-                ? <div>
+                ? <div className="bg-transparent-ns bg-white">
 
                     <input
                       disabled={
@@ -525,18 +526,14 @@ export default class App extends Component {
                     >
                       <div
                         className={
-                          this.state.profiles[match.params.id] &&
-                            this.state.profiles[match.params.id].canopy
-                            ? "pa3  w-100 h5-ns h4 bg-light-gray cover bg-center"
-                            : "pa3  w-100 h4 bg-near-black cover bg-center"
-                        }
-                        style={{
-                          height: (this.state.edit &&
+                          (this.state.edit &&
                             match.params.id === this.state.id) ||
                             (this.state.profiles[match.params.id] &&
                               this.state.profiles[match.params.id].canopy)
-                            ? "16rem"
-                            : "8rem",
+                            ? "w-100 h5-ns h4 bg-light-gray cover bg-center"
+                            : "w-100 h4 bg-near-black cover bg-center"
+                        }
+                        style={{
                           backgroundImage: this.state.profiles[
                             match.params.id
                           ] && this.state.profiles[match.params.id].canopy
@@ -544,59 +541,66 @@ export default class App extends Component {
                             : "none"
                         }}
                       >
-
-                        <div className="flex justify-end items-start">
-                          {match.params.id === this.state.id
-                            ? this.state.edit &&
-                                match.params.id === this.state.id
-                                ? // if user profile, show edit button
-                                  <div>
-                                    <button
+                        <div
+                          className={
+                            this.state.edit && match.params.id === this.state.id
+                              ? "pa3 bg-black-50 w-100 h-100"
+                              : "pa3 w-100 h-100"
+                          }
+                        >
+                          <div className="flex justify-end items-start">
+                            {match.params.id === this.state.id
+                              ? this.state.edit &&
+                                  match.params.id === this.state.id
+                                  ? // if user profile, show edit button
+                                    <div>
+                                      <button
+                                        onClick={this.toggleEdit.bind(this)}
+                                        className="btn mr3 pointer bg-white near-black near-black bn br1 pv2 ph3 f6 fw6"
+                                      >
+                                        Cancel
+                                      </button>
+                                      <button
+                                        onClick={this.toggleEdit.bind(this)}
+                                        className="btn pointer bg-white bright-blue near-black bn br1 pv2 ph3 f6 fw6"
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                  : <button
                                       onClick={this.toggleEdit.bind(this)}
-                                      className="btn mr3 pointer bg-white near-black near-black bn br1 pv2 ph3 f6 fw6"
+                                      className="btn pointer bg-white near-black bn br1 pv2 ph3 f6 fw6"
                                     >
-                                      Cancel
+                                      Edit profile
                                     </button>
-                                    <button
-                                      onClick={this.toggleEdit.bind(this)}
-                                      className="btn pointer bg-white bright-blue near-black bn br1 pv2 ph3 f6 fw6"
-                                    >
-                                      Save
-                                    </button>
-                                  </div>
-                                : <button
-                                    onClick={this.toggleEdit.bind(this)}
-                                    className="btn pointer bg-white near-black bn br1 pv2 ph3 f6 fw6"
-                                  >
-                                    Edit profile
-                                  </button>
-                            : // or just the follow button
-                              <button
-                                onClick={() =>
-                                  this.toggleFollow(match.params.id)}
-                                className="btn pointer bg-white near-black bn br1 pv2 ph3 f6 fw6"
-                              >
+                              : // or just the follow button
+                                <button
+                                  onClick={() =>
+                                    this.toggleFollow(match.params.id)}
+                                  className="btn pointer bg-white near-black bn br1 pv2 ph3 f6 fw6"
+                                >
+                                  {this.state.profiles[match.params.id] &&
+                                    this.state.profiles[match.params.id]
+                                      .following
+                                    ? "Following"
+                                    : "Follow"}
+                                </button>}
+                          </div>
+                          {this.state.edit && match.params.id === this.state.id
+                            ? <p className="pt4-ns pt2 mt0 f4 fw6 tc center white">
                                 {this.state.profiles[match.params.id] &&
-                                  this.state.profiles[match.params.id].following
-                                  ? "Following"
-                                  : "Follow"}
-                              </button>}
+                                  this.state.profiles[match.params.id].canopy
+                                  ? "Change your background photo"
+                                  : "Add a background photo"}
+                              </p>
+                            : null}
+
                         </div>
-                        {this.state.edit && match.params.id === this.state.id
-                          ? <p className="pt4 f4 fw6 tc center white">
-                              {this.state.profiles[match.params.id] &&
-                                this.state.profiles[match.params.id].canopy
-                                ? "Change your background photo"
-                                : "Add a background photo"}
-                            </p>
-                          : null}
-
                       </div>
-
                     </label>
 
                     <div
-                      className="mtn5 flex items-center justify-center center ba b--white bw1 h4 w4 minw4 br2 cover bg-light-gray"
+                      className="mtn4-ns mtn3 center-ns mh3 ba b--white bw1 h4-ns w4-ns h3 w3 br2 cover bg-light-gray"
                       style={{
                         backgroundImage: this.state.profiles[match.params.id]
                           ? `url('https://ipfs.io/ipfs/${this.state.profiles[match.params.id].icon}`
@@ -622,10 +626,10 @@ export default class App extends Component {
                         : null}
                     </div>
 
-                    <div className="center tc ph3">
-                      <div className="mv1 center flex items-center justify-center">
+                    <div className="center tc ph2 ">
+                      <div className="mv1-ns mv0  center">
 
-                        <h1 className="flex items-center  mv0 link f4 fw6 near-black">
+                        <h1 className="flex items-center justify-center-ns center-ns mv0 link f4 fw6 near-black">
                           <AutosizeInput
                             className="name nowrap ma0 input bn f4 fw6 near-black"
                             type="text"
@@ -649,7 +653,7 @@ export default class App extends Component {
                               fontWeight: 600
                             }}
                             disabled={
-                              !this.state.edit &&
+                              !this.state.edit ||
                                 match.params.id !== this.state.id
                             }
                             onChange={this.handleNameEdit.bind(this)}
@@ -667,7 +671,7 @@ export default class App extends Component {
                             (match.params.id === id && !this.state.edit)
                             ? <span>
                                 <svg
-                                  className="pb1"
+                                  className="pb1 center-ns"
                                   fill="#5856D6"
                                   width="18px"
                                   height="18px"
@@ -684,7 +688,7 @@ export default class App extends Component {
                         </h1>
                       </div>
 
-                      <h2 className="mv0 f6 fw4 lh-copy light-silver break-all">
+                      <h2 className="mv0 mh2 f6-ns f7 tc-ns tl fw4 lh-copy light-silver break-all">
                         @
                         <span className="nowrap">
                           {match.params.id.substr(0, 23)}
@@ -705,10 +709,10 @@ export default class App extends Component {
                         .map(post => {
                           return (
                             <Post
-                              key={post.author.id + post.date_published}
+                              key={post.author.id + post.date}
                               author={profiles[post.author.id]}
                               content={post.content}
-                              date_published={post.date_published}
+                              date={post.date}
                             />
                           );
                         })}
