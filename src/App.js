@@ -67,7 +67,7 @@ export default class App extends Component {
     if (!localStorage.getItem("icon")) localStorage.setItem("icon", icon);
 
     const canopy = localStorage.getItem("canopy");
-    const description = localStorage.getItem("description") || "";
+    const bio = localStorage.getItem("bio") || "";
 
     const posts = JSON.parse(localStorage.getItem("posts")) || [];
     const profiles = JSON.parse(localStorage.getItem("profiles")) || {};
@@ -78,7 +78,7 @@ export default class App extends Component {
       icon,
       posts,
       canopy,
-      description,
+      bio,
       profiles,
       peers: []
     };
@@ -93,7 +93,6 @@ export default class App extends Component {
         node
           .id()
           .then(id => {
-            console.log(id);
             this.setState({ id: id.id });
             localStorage.setItem("id", id.id);
 
@@ -178,8 +177,6 @@ export default class App extends Component {
           return console.error("Could not parse post", err);
         }
 
-        console.log(post);
-
         const { author, previous } = post;
 
         post.hash = hash;
@@ -194,17 +191,42 @@ export default class App extends Component {
 
         // !!! DANGEROUS !!! SAFETY CHECKS NEEDED
         let newProfiles = this.state.profiles;
-        newProfiles[author.id] = author;
-        this.setState({ profiles: newProfiles });
+
+        if (!newProfiles[author.id]) {
+          newProfiles[author.id] = author;
+          this.setState({ profiles: newProfiles });
+          localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
+        }
 
         // }
         this.setState({ posts: [post, ...this.state.posts] });
         localStorage.setItem("posts", JSON.stringify(this.state.posts));
-        localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
 
         // Do some more safety checks here obviously
         // if (isIPFS.multihash(previous)) {
-        if (previous && previous.length == 46) this.handleHash(previous);
+        if (previous && previous.length === 46) this.handleHash(previous);
+
+        if (post.content && post.content[0] && post.content[0].text) {
+          new Notification(author.name, {
+            icon: `https://ipfs.io/ipfs/${author.icon}`,
+            body: post.content[0].text
+          });
+        } else if (
+          post.content &&
+          post.content[1] &&
+          IMAGE_TYPES.indexOf(post.content[1].type) !== -1
+        ) {
+          new Notification(author.name, {
+            icon: `https://ipfs.io/ipfs/${author.icon}`,
+            image: `https://ipfs.io/ipfs/${post.content[1].hash}`
+          });
+        } else {
+          new Notification(author.name, {
+            icon: `https://ipfs.io/ipfs/${author.icon}`,
+            body: "New post"
+          });
+        }
+
         // }
       });
     });
@@ -336,7 +358,7 @@ export default class App extends Component {
               name: this.state.name || "Anonymous",
               icon: this.state.icon,
               canopy: this.state.canopy,
-              description: this.state.description
+              bio: this.state.bio
             },
             content: content,
             date_published: format(
@@ -351,7 +373,6 @@ export default class App extends Component {
           if (err || !res) {
             console.error("Did not add the IPFS file.", err);
           } else {
-            console.log(res);
             res.forEach(file => {
               node.pubsub.publish(
                 "static.network",
@@ -456,8 +477,17 @@ export default class App extends Component {
     localStorage.setItem("profiles", JSON.stringify(newProfiles));
   }
 
+  handleBioEdit(event) {
+    this.setState({ bio: event.target.value });
+    localStorage.setItem("bio", event.target.value);
+    let newProfiles = this.state.profiles;
+    newProfiles[this.state.id].bio = event.target.value;
+    this.setState({ profiles: newProfiles });
+    localStorage.setItem("profiles", JSON.stringify(newProfiles));
+  }
+
   render() {
-    const { peers, profiles, posts, name, icon, id } = this.state;
+    const { peers, profiles, posts, name, icon, id, canopy } = this.state;
     return (
       <Router>
         <div
@@ -486,6 +516,7 @@ export default class App extends Component {
                   connectionError={this.state.error}
                   onPublish={this.publish}
                   icon={icon}
+                  canopy={canopy}
                   id={id}
                   name={name}
                 />
@@ -603,7 +634,7 @@ export default class App extends Component {
                     </label>
 
                     <div
-                      className="mtn4-ns mtn3 center-ns mh3 ba b--white bw1 h4-ns w4-ns h3 w3 br2 cover bg-light-gray"
+                      className="mtn4-ns mtn3 center-ns mh3 ba b--white bw2 h4-ns w4-ns h3 w3 br3 cover bg-light-gray"
                       style={{
                         backgroundImage: this.state.profiles[match.params.id]
                           ? `url('https://ipfs.io/ipfs/${this.state.profiles[match.params.id].icon}`
@@ -629,95 +660,97 @@ export default class App extends Component {
                         : null}
                     </div>
 
-                    <div className="center tc ph2 ">
-                      <div className="mv1-ns mv0  center">
+                    <div className="center flex flex-column items-center-ns tc ph3 ">
+                      <h1 className="mv1 flex items-center justify-center-ns mv0 link f4 fw6 near-black">
+                        <AutosizeInput
+                          className="name nowrap ma0 input bn f4 fw6 near-black"
+                          type="text"
+                          inputStyle={{
+                            margin: 0,
+                            padding: 0,
+                            borderRadius: "0.25rem",
+                            paddingTop: "0.25rem",
+                            paddingBottom: "0.25rem",
+                            paddingLeft: this.state.edit &&
+                              match.params.id === this.state.id
+                              ? "0.5rem"
+                              : "0",
 
-                        <h1 className="flex items-center justify-center-ns center-ns mv0 link f4 fw6 near-black">
-                          <AutosizeInput
-                            className="name nowrap ma0 input bn f4 fw6 near-black"
-                            type="text"
-                            inputStyle={{
-                              padding: 0,
-                              borderRadius: "0.25rem",
-                              paddingTop: "0.25rem",
-                              paddingBottom: "0.25rem",
-                              paddingLeft: "0.5rem",
+                            paddingRight: this.state.edit &&
+                              match.params.id === this.state.id
+                              ? "0.5rem"
+                              : "0",
+                            fontSize: "1.25rem",
+                            border: "none",
+                            backgroundColor: this.state.edit &&
+                              match.params.id === this.state.id
+                              ? "white"
+                              : "transparent",
+                            fontWeight: 600
+                          }}
+                          disabled={
+                            !this.state.edit ||
+                              match.params.id !== this.state.id
+                          }
+                          onChange={this.handleNameEdit.bind(this)}
+                          placeholder="Anonymous"
+                          value={
+                            this.state.edit && match.params.id === this.state.id
+                              ? this.state.name
+                              : this.state.profiles[match.params.id].name
+                          }
+                        />
 
-                              paddingRight: this.state.edit &&
-                                match.params.id === this.state.id
-                                ? "0.5rem"
-                                : "0",
-                              fontSize: "1.25rem",
-                              border: "none",
-                              backgroundColor: this.state.edit &&
-                                match.params.id === this.state.id
-                                ? "white"
-                                : "transparent",
-                              fontWeight: 600
-                            }}
-                            disabled={
-                              !this.state.edit ||
-                                match.params.id !== this.state.id
-                            }
-                            onChange={this.handleNameEdit.bind(this)}
-                            placeholder="Anonymous"
-                            value={
-                              this.state.edit &&
-                                match.params.id === this.state.id
-                                ? this.state.name
-                                : this.state.profiles[match.params.id].name
-                            }
-                          />
+                        {(this.state.profiles[match.params.id] &&
+                          this.state.profiles[match.params.id].following) ||
+                          (match.params.id === id && !this.state.edit)
+                          ? <span>
+                              <svg
+                                className="pb1 center-ns"
+                                fill="#5856D6"
+                                width="18px"
+                                height="18px"
+                                viewBox="0 0 17 17"
+                              >
+                                <path
+                                  d="M16.67,8.06 L15.59,6.72 C15.42,6.5 15.31,6.24 15.28,5.95 L15.09,4.25 C15.01,3.55 14.46,3 13.76,2.92 L12.06,2.73 C11.76,2.7 11.5,2.57 11.28,2.4 L9.94,1.32 C9.39,0.88 8.61,0.88 8.06,1.32 L6.72,2.4 C6.5,2.57 6.24,2.68 5.95,2.71 L4.25,2.9 C3.55,2.98 3,3.53 2.92,4.23 L2.73,5.93 C2.7,6.23 2.57,6.49 2.4,6.71 L1.32,8.05 C0.88,8.6 0.88,9.38 1.32,9.93 L2.4,11.27 C2.57,11.49 2.68,11.75 2.71,12.04 L2.9,13.74 C2.98,14.44 3.53,14.99 4.23,15.07 L5.93,15.26 C6.23,15.29 6.49,15.42 6.71,15.59 L8.05,16.67 C8.6,17.11 9.38,17.11 9.93,16.67 L11.27,15.59 C11.49,15.42 11.75,15.31 12.04,15.28 L13.74,15.09 C14.44,15.01 14.99,14.46 15.07,13.76 L15.26,12.06 C15.29,11.76 15.42,11.5 15.59,11.28 L16.67,9.94 C17.11,9.39 17.11,8.61 16.67,8.06 L16.67,8.06 Z M7.5,13 L4,9.5 L5.5,8 L7.5,10 L12.5,5 L14,6.55 L7.5,13 L7.5,13 Z"
+                                  id="Shape"
+                                  stroke="none"
+                                />
+                              </svg>
+                            </span>
+                          : null}
+                      </h1>
 
-                          {(this.state.profiles[match.params.id] &&
-                            this.state.profiles[match.params.id].following) ||
-                            (match.params.id === id && !this.state.edit)
-                            ? <span>
-                                <svg
-                                  className="pb1 center-ns"
-                                  fill="#5856D6"
-                                  width="18px"
-                                  height="18px"
-                                  viewBox="0 0 17 17"
-                                >
-                                  <path
-                                    d="M16.67,8.06 L15.59,6.72 C15.42,6.5 15.31,6.24 15.28,5.95 L15.09,4.25 C15.01,3.55 14.46,3 13.76,2.92 L12.06,2.73 C11.76,2.7 11.5,2.57 11.28,2.4 L9.94,1.32 C9.39,0.88 8.61,0.88 8.06,1.32 L6.72,2.4 C6.5,2.57 6.24,2.68 5.95,2.71 L4.25,2.9 C3.55,2.98 3,3.53 2.92,4.23 L2.73,5.93 C2.7,6.23 2.57,6.49 2.4,6.71 L1.32,8.05 C0.88,8.6 0.88,9.38 1.32,9.93 L2.4,11.27 C2.57,11.49 2.68,11.75 2.71,12.04 L2.9,13.74 C2.98,14.44 3.53,14.99 4.23,15.07 L5.93,15.26 C6.23,15.29 6.49,15.42 6.71,15.59 L8.05,16.67 C8.6,17.11 9.38,17.11 9.93,16.67 L11.27,15.59 C11.49,15.42 11.75,15.31 12.04,15.28 L13.74,15.09 C14.44,15.01 14.99,14.46 15.07,13.76 L15.26,12.06 C15.29,11.76 15.42,11.5 15.59,11.28 L16.67,9.94 C17.11,9.39 17.11,8.61 16.67,8.06 L16.67,8.06 Z M7.5,13 L4,9.5 L5.5,8 L7.5,10 L12.5,5 L14,6.55 L7.5,13 L7.5,13 Z"
-                                    id="Shape"
-                                    stroke="none"
-                                  />
-                                </svg>
-                              </span>
-                            : null}
-                        </h1>
-                      </div>
-
-                      <h2 className="mv0 mh2 f6-ns f7 tc-ns tl fw4 lh-copy light-silver break-all">
+                      <h2 className="mv0 f6-ns f7 tc-ns tl fw4 lh-copy light-silver break-all">
                         @
-                        <span className="nowrap">
+                        <span>
                           {match.params.id.substr(0, 23)}
                         </span>
-                        <span className="nowrap">
+                        <span>
                           {match.params.id.substr(23, 23)}
                         </span>
                       </h2>
 
-                      <p className="measure tc mv2 center f6 fw4 lh-copy near-black">
-                        {this.state.profiles[match.params.id].description}
-                      </p>
+                      {this.state.profiles[match.params.id].bio
+                        ? <p className="mt2 mb0 w-100 tc-ns tl lh-copy measure f6 near-black">
+                            {this.state.profiles[match.params.id].bio}
+                          </p>
+                        : null}
 
                     </div>
-                    <div className="mt4 mw5 near-black center flex flex-row items-center justify-around">
-                      <div>
-                        <h3 className="mv0 tc"> {filteredPosts.length}</h3>
-                        <span className="gray f7 ttu">Posts</span>
+                    <div className="mv3 near-black center flex justify-center">
+                      <div className="mh3 tc">
+                        <h3 className="mv0"> {filteredPosts.length}</h3>
+                        <span className="near-black f7 fw6 ttu">Posts</span>
                       </div>
-                      <div>
-                        <h3 className="mv0 gray tc">0</h3>
-                        <span className="gray f7 ttu">Following</span>
+                      <div className="mh3 tc">
+                        <h3 className="mv0 gray">0</h3>
+                        <span className="silver f7 fw6 ttu">Following</span>
                       </div>
-                      <div>
-                        <h3 className="mv0 gray tc">0</h3>
-                        <span className="gray f7 ttu">Likes</span>
+                      <div className="mh3 tc">
+                        <h3 className="mv0 gray">0</h3>
+                        <span className="silver f7 fw6 ttu">Likes</span>
                       </div>
                     </div>
                     <div className="mt3 mb5">
@@ -728,6 +761,7 @@ export default class App extends Component {
                             author={profiles[post.author.id]}
                             content={post.content}
                             date={post.date}
+                            selfIcon={this.state.icon}
                           />
                         );
                       })}
@@ -740,7 +774,6 @@ export default class App extends Component {
                   </div>;
             }}
           />
-
         </div>
       </Router>
     );

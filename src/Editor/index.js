@@ -291,6 +291,12 @@ class MyEditor extends React.Component {
                                       text: `* ${block.getText()}`
                                     };
                                   }
+                                  if (type === "ordered-list-item") {
+                                    return {
+                                      type: "text",
+                                      text: `1. ${block.getText()}`
+                                    };
+                                  }
                                   if (type === "atomic") {
                                     const entity = contentState.getEntity(
                                       block.getEntityAt(0)

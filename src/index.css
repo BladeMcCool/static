@@ -173,6 +173,24 @@ body {
    color:    #CCC;
 }
 
+.replyBox::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #CCC;
+}
+.replyBox:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #CCC;
+   opacity:  1;
+}
+.replyBox::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #CCC;
+   opacity:  1;
+}
+.replyBox:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #CCC;
+}
+.replyBox::-ms-input-placeholder { /* Microsoft Edge */
+   color:    #CCC;
+}
+
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color:   #111;
 }
@@ -248,6 +266,10 @@ input {
   outline: none !important;
 }
 
+.minw2 {
+  min-width: 2rem;
+}
+
 .minw4 {
   min-width: 8rem;
 }
@@ -294,6 +316,14 @@ body {
 
 .public-DraftEditorPlaceholder-root {
   color: #AAA;
+}
+
+.replying {
+    z-index: 90;
+}
+
+.replying * {
+    z-index: 999;
 }
 
 

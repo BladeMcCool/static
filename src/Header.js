@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import AutosizeInput from "react-input-autosize";
+// import AutosizeInput from "react-input-autosize";
 
 import { Link } from "react-router-dom";
 
 export default class Header extends Component {
   render() {
-    const { peerCount, icon, onNameEdit, connectionError, id } = this.props;
+    const { peerCount, icon, connectionError, id } = this.props;
     return (
       <header className="bg-white w-100 b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
         <div className="flex-auto flex flex-row items-center">

@@ -21,14 +21,16 @@ export default class Home extends Component {
       posts,
       peerCount,
       onPublish,
-      connectionError
+      connectionError,
+      icon
     } = this.props;
     return (
       <main
+        className="relative"
         onDragOver={this.handleDragOver.bind(this)}
         onDragLeave={this.handleDragLeave.bind(this)}
-        className="mt0-ns"
       >
+
         <PostEditor
           ref="editor"
           name={this.props.name || "Anonymous"}
@@ -46,6 +48,7 @@ export default class Home extends Component {
               author={profiles[post.author.id]}
               content={post.content}
               date={post.date}
+              selfIcon={icon}
               verified={
                 (profiles &&
                   profiles[post.author.id] &&

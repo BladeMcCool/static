@@ -19,9 +19,12 @@ class Post extends Component {
   }
 
   render() {
-    const { author, content, date, verified } = this.props;
+    const { author, content, date, verified, selfIcon } = this.props;
 
     const iconURL = author ? `url('https://ipfs.io/ipfs/${author.icon}')` : "#";
+    const selfIconURL = author
+      ? `url('https://ipfs.io/ipfs/${selfIcon}')`
+      : "#";
 
     const contentElements = content.map(block => {
       if (block.type === "text" && block.text !== "")
@@ -48,7 +51,7 @@ class Post extends Component {
                   },
                   a: {
                     props: {
-                      className: "link blue"
+                      className: "link blue break-all"
                     }
                   }
                 }
@@ -141,7 +144,10 @@ class Post extends Component {
               className="hover-dark-green reply overflow-visible pointer pa0 bg-transparent bn mr3"
               aria-label="Reply"
               onClick={event => {
-                this.refs.reply.blur();
+                this.setState({ replying: !this.state.replying }, () => {
+                  if (this.state.replying) this.refs.replyBox.focus();
+                });
+                // this.refs.reply.blur();
               }}
             >
               <svg fill="#AAA" width="14px" height="14px" viewBox="0 0 14 14">
@@ -161,7 +167,7 @@ class Post extends Component {
                 this.refs.republish.blur();
               }}
             >
-              <svg viewBox="0 .5 20 18" className="h1" fill="#AAA">
+              <svg viewBox="0 1.25 20 18" className="h1" fill="#AAA">
                 <path d="M5,13V8h2L3.5,4L0,8h2v6c0,1.104,0.895,2,2,2h9.482l-2.638-3H5z M9.156,7L6.518,4H16c1.104,0,2,0.897,2,2v6h2l-3.5,4L13,12h2V7H9.156z" />
               </svg>
             </button>
@@ -193,6 +199,25 @@ class Post extends Component {
         <div className="content w-100 pb3 ph3-ns">
           {contentElements}
         </div>
+        {this.state.replying
+          ? <div className="ph3-ns pb3 flex">
+              <div
+                className="pointer h2 w2 minw2 br2 mr2 cover bg-light-gray"
+                style={{ backgroundImage: selfIconURL }}
+              />
+              <div className="flex items-center pl2 pr1 w-100 bg-near-white  b--light-gray bw-5 ba br2">
+                <input
+                  ref="replyBox"
+                  type="text"
+                  placeholder={`Reply to ${author.name} (not working yet)`}
+                  className="replyBox bg-near-white br2 f6 serif bn w-100 "
+                />
+                <button className="bn pointer f7 fw6 pv1 ph2 br2 white bg-bright-blue">
+                  Reply
+                </button>
+              </div>
+            </div>
+          : null}
       </article>
     );
   }
