@@ -28,13 +28,22 @@ body {
   opacity: 1;
 }
 
+.ph05 {
+  padding-left: 0.0625rem;
+  padding-right: 0.0625rem;
+}
+
+.pl05 {
+
+}
+
 
 .name input:disabled, textarea:disabled {
     color: #111;
 }
 
 .mtn1 {
-  margin-top: -1px;
+  margin-top: -0.125rem;
 }
 
 .pl1px {
@@ -57,19 +66,81 @@ body {
   word-break: break-all;
 }
 
+.h35 {
+  height: 6rem;
+}
+
+.h05 {
+  height: 0.25rem;
+}
+
 .mtn3 {
   margin-top: -2rem;
 }
 
+.mtn2 {
+  margin-top: -1.25rem;
+}
+
+.mtn05 {
+    margin-top: -0.25rem;
+}
+
+.mln05 {
+    margin-left: -0.25rem;
+}
+
+.mln1 {
+    margin-left: -0.25rem;
+}
+
+.shadow-0{
+   box-shadow: 0px 0px 8px 0px rgba( 0, 0, 0, 0.0625 );
+}
+
+.following{
+  max-width: 38rem;
+}
+
+
+@media screen and (min-width:57em) {
+/*  .following: {
+    max-width: 62rem;
+}*/
+
+  .following-list {
+      max-width: 57rem;
+    /*min-width: 57rem;*/
+  }
+}
+
+/*.following-list {
+      max-width: 37rem;
+    min-width: 37rem;
+  }*/
+
+
 @media screen and (min-width:32em) {
+
+  .h45-ns {
+    height: 12rem;
+  }
+
+  .w45-ns {
+    width: 12rem;
+  }
 
 .bg-transparent-ns {
   background-color: transparent;
 }
 
 .mtn4-ns {
-  margin-top: -4rem;
+  margin-top: -10rem;
 }
+}
+
+.mtn4 {
+  margin-top: -4.5rem;
 }
 
 .mt35 {
@@ -134,9 +205,6 @@ body {
 :active,
 :focus {
   outline: 0 !important;
-  -webkit-box-shadow: none !important;
-  -moz-box-shadow: none !important;
-  box-shadow: none !important;
 }
 
 .hover-bright-blue:hover {
@@ -192,21 +260,21 @@ body {
 }
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color:   #111;
+    color:   #CCC;
 }
 :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-   color:    #111;
+   color:    #CCC;
    opacity:  1;
 }
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
-   color:    #111;
+   color:    #CCC;
    opacity:  1;
 }
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-   color:    #111;
+   color:    #CCC;
 }
 ::-ms-input-placeholder { /* Microsoft Edge */
-   color:    #111;
+   color:    #CCC;
 }
 
 input:focus::-webkit-input-placeholder { /* WebKit, Blink, Edge */
@@ -236,8 +304,29 @@ input:focus::-ms-input-placeholder { /* Microsoft Edge */
   height: 3rem;
 }
 
+.purple {
+  color: #5856D6;
+}
+
+.bg-purple {
+  background-color: #5856D6;
+}
+
+.b--purple {
+  border-color: #5856D6;
+}
+
+.mw-post {
+    max-width: 37rem;
+}
+
+.mw75 {
+  max-width: 902px;
+}
+
 .post {
-  max-width: 36rem;
+  max-width: 37rem;
+  min-width: 37rem;
 }
 
 .block .pause {
@@ -250,14 +339,20 @@ input:focus::-ms-input-placeholder { /* Microsoft Edge */
 
 .post button { outline: none; }
 
+.profile-card:nth-child(4n) {
+  margin-right: 0;
+}
+
 .content .block:first-child,
-.content .block:first-child p {
+.content .block:first-child p,
+.content .block:first-child h1 {
   padding-top: 0;
   margin-top: 0;
 }
 
 .content .block:last-child,
-.content .block:last-child p {
+.content .block:last-child p,
+.content .block:last-child h1 {
    padding-bottom: 0;
    margin-bottom: 0;
 }
@@ -272,6 +367,14 @@ input {
 
 .minw4 {
   min-width: 8rem;
+}
+
+.minw5 {
+  min-width: 16rem;
+}
+
+.minw55 {
+  min-width: 16rem !important;
 }
 
 .red { color: #FF4136; }
@@ -295,8 +398,8 @@ body {
   border: none !important;
 }
 
-.star:hover svg { fill: #FFB700; }
-.star:focus svg { fill: #FFB700; }
+.star:hover svg { fill: #FF0000; }
+.star:focus svg { fill: #FF0000; }
 .republish:hover svg { fill: #19A974 }
 .republish:focus svg { fill: #19A974; }
 .reply:hover svg { fill: #0433ff }

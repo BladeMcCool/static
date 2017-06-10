@@ -22,7 +22,8 @@
     "react-dom": "^15.5.4",
     "react-howler": "^3.6.2",
     "react-input-autosize": "^1.1.4",
-    "react-router-dom": "^4.1.1"
+    "react-router-dom": "^4.1.1",
+    "react-textarea-autosize": "^5.0.6"
   },
   "devDependencies": {
     "autoprefixer": "7.1.0",

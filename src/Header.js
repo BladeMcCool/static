@@ -10,7 +10,7 @@ export default class Header extends Component {
     return (
       <header className="bg-white w-100 b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
         <div className="flex-auto flex flex-row items-center">
-          <Link to="." className="near-black f4 fw5 ttu sans-serif tl link">
+          <Link to="/" className="near-black f4 fw5 ttu sans-serif tl link">
             <svg fill="#111" width="15px" height="24px" viewBox="0 0 10 16">
               <polygon id="Shape" points="10 7 6 7 9 0 0 9 4 9 1 16" />
             </svg>

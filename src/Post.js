@@ -41,12 +41,17 @@ class Post extends Component {
                 overrides: {
                   h1: {
                     props: {
-                      className: "mv0 f4 lh-title"
+                      className: "mv3 f4 lh-title"
                     }
                   },
                   h6: {
                     props: {
                       className: "mv0 f7 lh-title"
+                    }
+                  },
+                  p: {
+                    props: {
+                      className: `${content.length <= 3 ? "f5 mv0" : "f5 mv2"}`
                     }
                   },
                   a: {
@@ -96,9 +101,9 @@ class Post extends Component {
     });
 
     return (
-      <article className="post center mv2-ns mv0 bg-white br2-ns ba-ns bb b--light-gray">
+      <article className="mw-post w-100 mv2-ns mv0 bg-white br2-ns ba-ns bb b--light-gray">
         <div className="pa3 fw6 w-100 flex items-start justify-between">
-          <div className="h2 flex items-center">
+          <div className="h2 w-100 flex items-center">
             <Link
               to={`/@${author.id}`}
               className="link mv0 mr1 f6 fw6 near-black flex flex-row items-start"
@@ -111,7 +116,7 @@ class Post extends Component {
             <div className="ml2">
               <Link
                 to={`/@${author.id}`}
-                className="link mv0 mr1 f6 fw6 near-black flex flex-row items-center"
+                className="link mv0 mr1 f6 fw6 near-black flex items-center"
               >
                 {author.name || "Anonymous"}
                 {verified
@@ -120,7 +125,6 @@ class Post extends Component {
                         className="mtn1 pl1px"
                         fill="#5856D6"
                         width="14px"
-                        height="14px"
                         viewBox="0 0 17 17"
                       >
                         <path
@@ -150,9 +154,10 @@ class Post extends Component {
                 // this.refs.reply.blur();
               }}
             >
-              <svg fill="#AAA" width="14px" height="14px" viewBox="0 0 14 14">
+
+              <svg fill="#CCC" height="12px" viewBox="0 0 12 11">
                 <path
-                  d="M6,3.5 C9.92,3.94 14,6.625 14,13.5 C11.688,8.438 9.25,7.5 6,7.5 L6,11 L0.5,5.5 L6,0 L6,3.5 Z"
+                  d="M6,0.5 L0,5 L6,9.5 L6,6.5 C7.73,6.5 11.14,7.45 12,10.88 C12,6.33 8.94,3.83 6,3.5 L6,0.5 L6,0.5 Z"
                   id="Shape"
                   stroke="none"
                 />
@@ -167,10 +172,11 @@ class Post extends Component {
                 this.refs.republish.blur();
               }}
             >
-              <svg viewBox="0 1.25 20 18" className="h1" fill="#AAA">
+              <svg viewBox="0 1.25 20 18" height="14px" fill="#CCC">
                 <path d="M5,13V8h2L3.5,4L0,8h2v6c0,1.104,0.895,2,2,2h9.482l-2.638-3H5z M9.156,7L6.518,4H16c1.104,0,2,0.897,2,2v6h2l-3.5,4L13,12h2V7H9.156z" />
               </svg>
             </button>
+
             <button
               ref="star"
               className="star pointer overflow-visible pa0 bg-transparent bn"
@@ -180,15 +186,12 @@ class Post extends Component {
                 this.refs.star.blur();
               }}
             >
-              <svg
-                className="w1 h1"
-                viewBox="0 0 14 14"
-                fill={this.state.starred ? "#FFB700" : "#AAA"}
-              >
-                <polygon
+
+              <svg fill="#CCC" width="12px" height="11px" viewBox="0 0 12 11">
+                <path
+                  d="M11.2,1 C10.68,0.37 9.95,0.05 9,0 C8.03,0 7.31,0.42 6.8,1 C6.29,1.58 6.02,1.92 6,2 C5.98,1.92 5.72,1.58 5.2,1 C4.68,0.42 4.03,0 3,0 C2.05,0.05 1.31,0.38 0.8,1 C0.28,1.61 0.02,2.28 0,3 C0,3.52 0.09,4.52 0.67,5.67 C1.25,6.82 3.01,8.61 6,11 C8.98,8.61 10.77,6.83 11.34,5.67 C11.91,4.51 12,3.5 12,3 C11.98,2.28 11.72,1.61 11.2,0.98 L11.2,1 Z"
+                  id="Shape"
                   stroke="none"
-                  fillRule="nonzero"
-                  points="14 5 9.1 4.36 7 0 4.9 4.36 0 5 3.6 8.26 2.67 13 7 10.67 11.33 13 10.4 8.26"
                 />
               </svg>
             </button>
@@ -200,17 +203,17 @@ class Post extends Component {
           {contentElements}
         </div>
         {this.state.replying
-          ? <div className="ph3-ns pb3 flex">
+          ? <div className="ph3-ns pv3 flex bg-near-white">
               <div
                 className="pointer h2 w2 minw2 br2 mr2 cover bg-light-gray"
                 style={{ backgroundImage: selfIconURL }}
               />
-              <div className="flex items-center pl2 pr1 w-100 bg-near-white  b--light-gray bw-5 ba br2">
+              <div className="flex items-center pl2 pr1 w-100 bg-white  b--light-gray bw-5 ba br2">
                 <input
                   ref="replyBox"
                   type="text"
                   placeholder={`Reply to ${author.name} (not working yet)`}
-                  className="replyBox bg-near-white br2 f6 serif bn w-100 "
+                  className="replyBox bg-white br2 f6 serif bn w-100 "
                 />
                 <button className="bn pointer f7 fw6 pv1 ph2 br2 white bg-bright-blue">
                   Reply
