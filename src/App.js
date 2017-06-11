@@ -87,6 +87,8 @@ export default class App extends Component {
       peers: []
     };
 
+    console.log(this.state);
+
     const t = this;
 
     node
@@ -441,13 +443,13 @@ export default class App extends Component {
         if (err || res === null || res.length === 0) {
           return console.error(err);
         }
-        const hash = res.pop().hash;
-        t.setState({ canopy: hash });
-        localStorage.setItem("canopy", hash);
 
+        const hash = res.pop().hash;
         let newProfiles = t.state.profiles;
         newProfiles[t.state.id].canopy = hash;
-        t.setState({ profiles: newProfiles });
+
+        t.setState({ canopy: hash, profiles: newProfiles });
+        localStorage.setItem("canopy", hash);
         localStorage.setItem("profiles", JSON.stringify(newProfiles));
       });
     };
@@ -468,12 +470,11 @@ export default class App extends Component {
           return console.error(err);
         }
         const hash = res.pop().hash;
-        t.setState({ icon: hash });
-        localStorage.setItem("icon", hash);
-
         let newProfiles = t.state.profiles;
         newProfiles[t.state.id].icon = hash;
-        t.setState({ profiles: newProfiles });
+
+        t.setState({ profiles: newProfiles, icon: hash });
+        localStorage.setItem("icon", hash);
         localStorage.setItem("profiles", JSON.stringify(newProfiles));
       });
     };
