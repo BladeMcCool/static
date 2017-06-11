@@ -185,8 +185,6 @@ export default class App extends Component {
 
         const { author, previous } = post;
 
-        console.log(author);
-
         post.hash = hash;
 
         // if (this.state.profiles[author.id]) {
@@ -203,9 +201,13 @@ export default class App extends Component {
         // If unseen profile, just add it to the store
         if (!newProfiles[author.id]) {
           newProfiles[author.id] = author;
+          newProfiles[author.id].lastUpdate = Date.now();
           this.setState({ profiles: newProfiles });
           localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
-        } else if (post.date > this.state.profiles[author.id].lastUpdate) {
+        } else if (
+          !this.state.profiles[author.id].lastUpdate ||
+          post.date > this.state.profiles[author.id].lastUpdate
+        ) {
           // make sure this is new information
           // otherwise update information
           // TODO display warning flag next to name until user confirms changes

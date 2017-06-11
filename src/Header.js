@@ -21,7 +21,6 @@ export default class Header extends Component {
   render() {
     const { peerCount, icon, connectionError, id } = this.props;
     const iconURL = `https://ipfs.io/ipfs/${icon}`;
-    console.log(iconURL);
     return (
       <header className="bg-white w-100 b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
         <div className="flex-auto flex flex-row items-center">
