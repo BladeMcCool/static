@@ -95,11 +95,53 @@ body {
 }
 
 .shadow-0{
-   box-shadow: 0px 0px 8px 0px rgba( 0, 0, 0, 0.0625 );
+   box-shadow: 0px 0px 2px 1px rgba( 0, 0, 0, 0.0625 );
+}
+
+.shadow-6 {
+   box-shadow: 0px 0px 4px 1px rgba( 0, 0, 0, 0.125 );
 }
 
 .following{
   max-width: 38rem;
+}
+
+
+
+
+@media screen and (min-width:37em) {
+
+  .mw75 {
+    max-width:596px;
+    min-width:596px;
+  }
+}
+
+
+@media screen and (min-width:76em) {
+
+.mw75 {
+  max-width: 902px;
+  min-width: 902px;
+}
+
+
+}
+
+@media screen and (min-width:77em) {
+
+.profile-card:nth-child(3n) {
+  margin-right: 0;
+}
+}
+
+
+
+@media screen and (max-width:77em) {
+
+  .profile-card:nth-child(2n) {
+    margin-right: 0;
+  }
 }
 
 
@@ -130,13 +172,13 @@ body {
     width: 12rem;
   }
 
-.bg-transparent-ns {
-  background-color: transparent;
-}
+  .bg-transparent-ns {
+    background-color: transparent;
+  }
 
-.mtn4-ns {
-  margin-top: -10rem;
-}
+  .mtn4-ns {
+    margin-top: -10rem;
+  }
 }
 
 .mtn4 {
@@ -320,13 +362,10 @@ input:focus::-ms-input-placeholder { /* Microsoft Edge */
     max-width: 37rem;
 }
 
-.mw75 {
-  max-width: 902px;
-}
 
 .post {
   max-width: 37rem;
-  min-width: 37rem;
+  /*min-width: 37rem;*/
 }
 
 .block .pause {
@@ -339,9 +378,7 @@ input:focus::-ms-input-placeholder { /* Microsoft Edge */
 
 .post button { outline: none; }
 
-.profile-card:nth-child(4n) {
-  margin-right: 0;
-}
+
 
 .content .block:first-child,
 .content .block:first-child p,

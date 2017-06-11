@@ -26,15 +26,15 @@ class Post extends Component {
       ? `url('https://ipfs.io/ipfs/${selfIcon}')`
       : "#";
 
+    let i = 0;
     const contentElements = content.map(block => {
       if (block.type === "text" && block.text !== "")
         return (
           <div
-            key={block.text.substr(0, 256)}
+            key={block.text.substr(0, 256) + i++}
             className="block f5 ph0-ns ph3 serif near-black lh-copy"
           >
             <Markdown
-              key={block.text.substr(0, 256)}
               className="f5 ph0-ns ph3 serif near-black lh-copy"
               options={{
                 escapeHtml: true,
@@ -46,12 +46,12 @@ class Post extends Component {
                   },
                   h6: {
                     props: {
-                      className: "mv0 f7 lh-title"
+                      className: "mv2 f7 lh-title"
                     }
                   },
                   p: {
                     props: {
-                      className: `${content.length <= 3 ? "f5 mv0" : "f5 mv2"}`
+                      className: "f5 mv2"
                     }
                   },
                   a: {

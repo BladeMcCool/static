@@ -205,10 +205,12 @@ export default class App extends Component {
           newProfiles[author.id] = author;
           this.setState({ profiles: newProfiles });
           localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
-        } else {
+        } else if (post.date > this.state.profiles[author.id].lastUpdate) {
+          // make sure this is new information
           // otherwise update information
           // TODO display warning flag next to name until user confirms changes
           newProfiles[author.id] = author;
+          newProfiles[author.id].lastUpdate = Date.now();
           this.setState({ profiles: newProfiles });
           localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
         }
@@ -420,25 +422,10 @@ export default class App extends Component {
   }
 
   toggleFollow(id) {
-    if (!this.state.profiles[id])
-      return console.error("Error: expected peer in local db");
-
-    // const index = this.state.following.indexOf(id);
     let newFollowing = this.state.following;
-
     if (!this.state.following[id]) newFollowing[id] = true;
     else delete newFollowing[id];
-    // if (index != -1) {
-    //   newFollowing.splice(index, 1);
-    // } else {
-    //   newFollowing.push(id);
-    // }
-
-    // let newProfiles = this.state.profiles;
-    // newProfiles[id].following = !newProfiles[id].following;
-
     this.setState({ following: newFollowing });
-    // localStorage.setItem("profiles", JSON.stringify(newProfiles));
     localStorage.setItem("following", JSON.stringify(newFollowing));
   }
 
@@ -903,7 +890,7 @@ export default class App extends Component {
                                     </div>
                                   </Link>
                                 </div>
-                                <div className="mtn4 h3 flex items-center">
+                                <div className="mtn4 ph3 h3 flex items-center">
                                   {match.params.id === this.state.id
                                     ? this.state.edit &&
                                         match.params.id === this.state.id
@@ -946,17 +933,19 @@ export default class App extends Component {
 
                               </div>
 
-                              {filteredPosts.map(post => {
-                                return (
-                                  <Post
-                                    key={post.author.id + post.date}
-                                    author={profiles[post.author.id]}
-                                    content={post.content}
-                                    date={post.date}
-                                    selfIcon={this.state.icon}
-                                  />
-                                );
-                              })}
+                              {filteredPosts
+                                .sort((a, b) => b.date - a.date) // expensive sort!!
+                                .map(post => {
+                                  return (
+                                    <Post
+                                      key={post.author.id + post.date}
+                                      author={profiles[post.author.id]}
+                                      content={post.content}
+                                      date={post.date}
+                                      selfIcon={this.state.icon}
+                                    />
+                                  );
+                                })}
                             </div>
                           );
                         }}
@@ -965,135 +954,184 @@ export default class App extends Component {
                       <Route
                         path={`${match.url}/following`}
                         render={() => {
-                          console.log(this.state.profiles[match.params.id]);
                           if (
                             !this.state.profiles[match.params.id] ||
                             !this.state.profiles[match.params.id].following
                           )
                             return null;
                           return (
-                            <div className="mt2 mb5 mh3-ns">
+                            <div className="mw75 mt2 mb5 mh3-ns">
 
-                              <div className="flex items-center">
-                                <Link to={match.url} className="no-underline">
-                                  <div className="mtn4 h3 tc relative flex flex-column justify-center">
-                                    <h3 className="mt0 mb1 silver">
-                                      {filteredPosts.length}
-                                    </h3>
-                                    <span className="mh3 f7 fw4 ttu silver">
-                                      Posts
-                                    </span>
-                                    {match.isExact
-                                      ? <div className="absolute bottom-0 h05 w-100 bg-near-black" />
-                                      : null}
-                                  </div>
-                                </Link>
-                                <Link
-                                  to={`${match.url}/following`}
-                                  className=" no-underline"
-                                >
-                                  <div className="mtn4 h3 tc relative flex flex-column justify-center">
-                                    <h3 className={"mt0 mb1 near-black"}>
-                                      {this.state.profiles[match.params.id] &&
-                                        this.state.profiles[match.params.id]
-                                          .following
-                                        ? Object.keys(
-                                            this.state.profiles[match.params.id]
-                                              .following
-                                          ).length
-                                        : 0}
-                                    </h3>
-                                    <span className="near-black f7 fw4 ttu mh3">
-                                      Following
-                                    </span>
-                                    {match.isExact
-                                      ? null
-                                      : <div className="absolute bottom-0 h05 w-100 bg-near-black" />}
-                                  </div>
-                                </Link>
+                              <div className="flex justify-between">
+                                <div className="flex items-start">
+                                  <Link to={match.url} className="no-underline">
+                                    <div className="mtn4 h3 tc relative flex flex-column justify-center">
+                                      <h3 className="mt0 mb1 silver">
+                                        {filteredPosts.length}
+                                      </h3>
+                                      <span className="mh3 f7 fw4 ttu silver">
+                                        Posts
+                                      </span>
+                                      {match.isExact
+                                        ? <div className="absolute bottom-0 h05 w-100 bg-near-black" />
+                                        : null}
+                                    </div>
+                                  </Link>
+                                  <Link
+                                    to={`${match.url}/following`}
+                                    className=" no-underline"
+                                  >
+                                    <div className="mtn4 h3 tc relative flex flex-column justify-center">
+                                      <h3 className={"mt0 mb1 near-black"}>
+                                        {this.state.profiles[match.params.id] &&
+                                          this.state.profiles[match.params.id]
+                                            .following
+                                          ? Object.keys(
+                                              this.state.profiles[
+                                                match.params.id
+                                              ].following
+                                            ).length
+                                          : 0}
+                                      </h3>
+                                      <span className="near-black f7 fw4 ttu mh3">
+                                        Following
+                                      </span>
+                                      {match.isExact
+                                        ? null
+                                        : <div className="absolute bottom-0 h05 w-100 bg-near-black" />}
+                                    </div>
+                                  </Link>
 
-                                <Link to={"#"} className="no-underline">
-                                  <div className="mtn4 h3 tc relative flex flex-column justify-center">
-                                    <h3 className={"mt0 mb1 silver"}>
-                                      0
-                                    </h3>
-                                    <span className="mh3 f7 fw4 ttu silver">
-                                      Likes
-                                    </span>
-                                  </div>
-                                </Link>
+                                  <Link to={"#"} className="no-underline">
+                                    <div className="mtn4 h3 tc relative flex flex-column justify-center">
+                                      <h3 className={"mt0 mb1 silver"}>
+                                        0
+                                      </h3>
+                                      <span className="mh3 f7 fw4 ttu silver">
+                                        Likes
+                                      </span>
+                                    </div>
+                                  </Link>
+                                </div>
+
+                                <div className="mtn4 mh3 h3 flex items-center">
+                                  {match.params.id === this.state.id
+                                    ? this.state.edit &&
+                                        match.params.id === this.state.id
+                                        ? // if user profile, show edit button
+                                          <div>
+                                            <button
+                                              onClick={this.toggleEdit.bind(
+                                                this
+                                              )}
+                                              className="btn ba bw05 b--silver mr3 pointer bg-white near-black near-black br2 pv2 ph3 f6 fw6"
+                                            >
+                                              Cancel
+                                            </button>
+                                            <button
+                                              onClick={this.toggleEdit.bind(
+                                                this
+                                              )}
+                                              className="btn ba bw05 b--silver pointer bg-white bright-blue near-black br2 pv2 ph3 f6 fw6"
+                                            >
+                                              Save
+                                            </button>
+                                          </div>
+                                        : <button
+                                            onClick={this.toggleEdit.bind(this)}
+                                            className="hover-bg-near-white btn ba bw05 b--silver pointer bg-white near-black  ml5 br2 pv2 ph3 f6 fw6"
+                                          >
+                                            Edit profile
+                                          </button>
+                                    : // or just the follow button
+                                      <button
+                                        onClick={() =>
+                                          this.toggleFollow(match.params.id)}
+                                        className={`btn pointer br2 pv2 ph3 f6 fw6 ba bw05 b--purple ${this.state.profiles[match.params.id] && this.state.following[match.params.id] ? "bg-purple white" : "bg-white purple"}`}
+                                      >
+                                        {this.state.following[match.params.id]
+                                          ? "Following"
+                                          : "Follow"}
+                                      </button>}
+                                </div>
+
                               </div>
 
-                              {Object.keys(
-                                this.state.profiles[match.params.id].following
-                              ).map(id => {
-                                const iconURL = this.state.profiles[id]
-                                  ? `url('https://ipfs.io/ipfs/${this.state.profiles[id].icon}')`
-                                  : "#";
+                              <div>
+                                {Object.keys(
+                                  this.state.profiles[match.params.id].following
+                                ).map(id => {
+                                  const iconURL = this.state.profiles[id]
+                                    ? `url('https://ipfs.io/ipfs/${this.state.profiles[id].icon}')`
+                                    : "#";
 
-                                const backgroundURL = this.state.profiles[id]
-                                  ? `url('https://ipfs.io/ipfs/${this.state.profiles[id].canopy}')`
-                                  : "#";
-                                return (
-                                  <div className="profile-card fl h5 mr3 br3 overflow-hidden ba b--light-gray  mv2 bg-white">
-                                    <Link to={`/@${id}`}>
-                                      <div
-                                        className="bg-light-gray h35 w-100 cover bg-center"
-                                        style={{
-                                          backgroundImage: backgroundURL
-                                        }}
-                                      />
-                                    </Link>
-
-                                    <div className="flex items-center justify-between mh3">
+                                  const backgroundURL = this.state.profiles[id]
+                                    ? `url('https://ipfs.io/ipfs/${this.state.profiles[id].canopy}')`
+                                    : "#";
+                                  return (
+                                    <div
+                                      key={id}
+                                      className="profile-card fl h5 mr3 br3 overflow-hidden ba b--light-gray  mv2 bg-white"
+                                    >
                                       <Link to={`/@${id}`}>
+                                        <div
+                                          className="bg-light-gray h35 w-100 cover bg-center"
+                                          style={{
+                                            backgroundImage: backgroundURL
+                                          }}
+                                        />
+                                      </Link>
 
-                                        <div className="mln05 mtn2 overflow-hidden ba b--white bw2  br3  bg-light-gray">
-                                          <div
-                                            className="h3 w3 cover"
-                                            style={{
-                                              backgroundImage: iconURL
-                                            }}
-                                          />
+                                      <div className="flex items-center justify-between mh3">
+                                        <Link to={`/@${id}`}>
+
+                                          <div className="mln05 mtn2 overflow-hidden ba b--white bw2  br3  bg-light-gray">
+                                            <div
+                                              className="h3 w3 cover"
+                                              style={{
+                                                backgroundImage: iconURL
+                                              }}
+                                            />
+                                          </div>
+                                        </Link>
+
+                                        <div className="ml2 mtn05">
+                                          <button className="bg-white ph3 pv1 br2 ba b--silver f7 fw6">
+                                            Follow
+                                          </button>
                                         </div>
-                                      </Link>
-
-                                      <div className="ml2 mtn05">
-                                        <button className="bg-white ph3 pv2 br2 ba b--silver f6 fw6">
-                                          Follow
-                                        </button>
                                       </div>
+
+                                      <div className="w5 mh3 mt0 minh4 pl05 relative">
+
+                                        {this.state.profiles[id]
+                                          ? <Link
+                                              to={`/@${id}`}
+                                              className="link db f5 mv2 mt0 fw6 near-black"
+                                            >
+                                              {this.state.profiles[id].name}
+                                            </Link>
+                                          : null}
+                                        <Link
+                                          to={`/@${id}`}
+                                          className="link f6 db mv2 light-silver break-all"
+                                        >
+                                          @{id}
+                                        </Link>
+
+                                        {this.state.profiles[id] &&
+                                          this.state.profiles[id].bio
+                                          ? <p className="f6 mv2 fw5 mid-gray lh-copy">
+                                              {this.state.profiles[id].bio}
+
+                                            </p>
+                                          : null}
+                                      </div>
+
                                     </div>
-
-                                    <div className="w5 mh3 mv3 minh4 pl05 relative">
-
-                                      {this.state.profiles[id]
-                                        ? <Link
-                                            to={`/@${id}`}
-                                            className="link db f5 mv2 fw6 near-black"
-                                          >
-                                            {this.state.profiles[id].name}
-                                          </Link>
-                                        : null}
-                                      <Link
-                                        to={`/@${id}`}
-                                        className="link f6 db mv2 light-silver break-all"
-                                      >
-                                        @{id}
-                                      </Link>
-
-                                      {this.state.profiles[id] &&
-                                        this.state.profiles[id].bio
-                                        ? <p className="f6 mv2 fw5 gray lh-copy">
-                                            {this.state.profiles[id].bio}
-
-                                          </p>
-                                        : null}
-                                    </div>
-
-                                  </div>
-                                );
-                              })}
+                                  );
+                                })}
+                              </div>
                             </div>
                           );
                         }}

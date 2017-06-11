@@ -38,7 +38,6 @@ export default class Home extends Component {
 
     return (
       <main
-        className="relative"
         onDragOver={this.handleDragOver.bind(this)}
         onDragLeave={this.handleDragLeave.bind(this)}
       >
@@ -151,12 +150,7 @@ export default class Home extends Component {
                   content={post.content}
                   date={post.date}
                   selfIcon={icon}
-                  verified={
-                    (profiles &&
-                      profiles[post.author.id] &&
-                      profiles[post.author.id].following) ||
-                      post.author.id === this.props.id
-                  }
+                  verified={following[post.author.id]}
                 />
               );
             })}
