@@ -42,6 +42,10 @@ body {
     color: #111;
 }
 
+.mtn6 {
+  margin-top: -11rem;
+}
+
 .mtn1 {
   margin-top: -0.125rem;
 }
@@ -94,6 +98,10 @@ body {
     margin-left: -0.25rem;
 }
 
+.mln2 {
+    margin-left: -0.5rem;
+}
+
 .shadow-0{
    box-shadow: 0px 0px 2px 1px rgba( 0, 0, 0, 0.0625 );
 }
@@ -112,37 +120,38 @@ body {
 @media screen and (min-width:37em) {
 
   .mw75 {
-    max-width:596px;
-    min-width:596px;
+    max-width:612px;
+    min-width:612px;
   }
 }
 
 
-@media screen and (min-width:76em) {
+@media screen and (min-width:78em) {
 
 .mw75 {
-  max-width: 902px;
-  min-width: 902px;
+  max-width: 918px;
+  min-width: 918px;
 }
 
 
 }
 
-@media screen and (min-width:77em) {
 
-.profile-card:nth-child(3n) {
+/*@media screen and (min-width:77em) {
+
+.profile-card:nth-child(4n) {
   margin-right: 0;
 }
 }
 
 
 
-@media screen and (max-width:77em) {
+@media screen and (max-width:75.5em) {
 
-  .profile-card:nth-child(2n) {
+  .profile-card:nth-child(3n) {
     margin-right: 0;
   }
-}
+}*/
 
 
 @media screen and (min-width:57em) {
@@ -247,6 +256,18 @@ body {
 :active,
 :focus {
   outline: 0 !important;
+}
+
+.hover-bg-black-05:hover {
+  background-color: rgba(0,0,0,0.025);
+}
+
+.hover-bg-bright-blue-05:hover {
+  background-color: rgba(0,0,255,0.05);
+}
+
+.b--bright-blue {
+  border-color: #0433ff;
 }
 
 .hover-bright-blue:hover {
@@ -358,8 +379,11 @@ input:focus::-ms-input-placeholder { /* Microsoft Edge */
   border-color: #5856D6;
 }
 
-.mw-post {
-    max-width: 37rem;
+@media screen and (min-width:37em) {
+.mw-post-ns {
+    max-width: 594px;
+    min-width: 594px;
+}
 }
 
 
@@ -410,17 +434,10 @@ input {
   min-width: 16rem;
 }
 
-.minw55 {
-  min-width: 16rem !important;
-}
-
 .red { color: #FF4136; }
 .green { color: #2ECC40; }
 .bright-blue {color: #0433ff;}
 .bg-bright-blue {background-color: #0433ff;}
-.html {
-  background-color: #FFF;
-}
 
 body {
   background-color: #F5F5F6;

@@ -19,8 +19,7 @@ export default class Header extends Component {
   }
 
   render() {
-    const { peerCount, icon, connectionError, id } = this.props;
-    const iconURL = `https://ipfs.io/ipfs/${icon}`;
+    const { peerCount, icon, connectionError, id, name } = this.props;
     return (
       <header className="bg-white w-100 b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
         <div className="flex-auto flex flex-row items-center">
@@ -84,7 +83,7 @@ export default class Header extends Component {
 
               <div className="ml2 flex flex-column">
                 <span className="nowrap pa0 f6 fw6 near-black">
-                  {this.props.name || "Anonymous"}
+                  {name || "Anonymous"}
                 </span>
 
                 <span
@@ -99,15 +98,6 @@ export default class Header extends Component {
             </Link>
           </div>
         </div>
-        {
-          // <div className="absolute z-999 right-0 top-0 mt4 pa0 mh3 near-black">
-          //   <ul className="list mt35 bg-white br2 ba b--light-gray pa3">
-          //     <li className="f7 mb2">@{id}</li>
-          //     <li className="f6 mb2">Profile</li>
-          //     <li className="f6 mb2">Settings</li>
-          //   </ul>
-          // </div>
-        }
       </header>
     );
   }
@@ -116,7 +106,5 @@ export default class Header extends Component {
 Header.propTypes = {
   peerCount: PropTypes.number.isRequired,
   icon: PropTypes.string.isRequired,
-  name: PropTypes.string,
-  onNameEdit: PropTypes.func.isRequired,
-  onToggleEditor: PropTypes.func.isRequired
+  name: PropTypes.string
 };

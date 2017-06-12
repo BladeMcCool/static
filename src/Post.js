@@ -12,10 +12,7 @@ import { IMAGE_TYPES, AUDIO_TYPES, VIDEO_TYPES } from "./Editor/constants";
 class Post extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      starred: false
-    };
-    this.toggleStarred = this.toggleStarred.bind(this);
+    this.state = {};
   }
 
   render() {
@@ -101,7 +98,7 @@ class Post extends Component {
     });
 
     return (
-      <article className="mw-post w-100 mv2-ns mv0 bg-white br2-ns ba-ns bb b--light-gray">
+      <article className="mw-post-ns w-100 ma2-ns mv0 bg-white br2-ns ba-ns bb b--light-gray">
         <div className="pa3 fw6 w-100 flex items-start justify-between">
           <div className="h2 w-100 flex items-center">
             <Link
@@ -223,10 +220,6 @@ class Post extends Component {
           : null}
       </article>
     );
-  }
-
-  toggleStarred() {
-    this.setState({ starred: !this.state.starred });
   }
 }
 

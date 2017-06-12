@@ -42,7 +42,7 @@ export default class Home extends Component {
         onDragLeave={this.handleDragLeave.bind(this)}
       >
         <div className="flex justify-center items-start">
-          <div className="minw5 dn db-l mw-post mv3 mr2-l  br3-l overflow-hidden ba b--light-gray bg-white">
+          <div className="minw5 dn db-l mw-post mv3 ml2-l  br3-l overflow-hidden ba b--light-gray bg-white">
             <Link to={`/@${id}`}>
               <div
                 className={`h35 w-100 cover bg-center ${canopy ? "bg-light-gray" : "bg-near-black"}`}
@@ -52,6 +52,9 @@ export default class Home extends Component {
               />
             </Link>
 
+            {
+              // TODO: Factor this out
+            }
             <div className="w5 minw55 mh3 mb3 minh4 pl05">
               <div className="flex items-center justify-start">
                 <Link to={`/@${id}`}>
@@ -127,11 +130,14 @@ export default class Home extends Component {
                   </Link>
                 </div>
               </div>
-
             </div>
 
+            {
+              // End self profile card
+            }
+
           </div>
-          <div className="w-100 mw75">
+          <div>
             <PostEditor
               ref="editor"
               name={this.props.name || "Anonymous"}
