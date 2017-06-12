@@ -25,10 +25,6 @@ const node = new window.Ipfs({
   }
 });
 
-function rand(items) {
-  return items[~~(Math.random() * items.length)];
-}
-
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -39,14 +35,6 @@ export default class App extends Component {
     this.setBackground = this.setBackground.bind(this);
 
     const name = localStorage.getItem("name");
-    const icons = [
-      "QmSgU5UrnPgZ1YdkwbtmU6gPZ4ULhbX9MukjVnvPrM8WEj",
-      "QmXmFMmaNurZZ95NSn5WNBpwoNy8U5MjNj3SvsdsZK5PNQ",
-      "QmNSqqvYRvCgzRd1UMcGPwYuSFRW9vCpW6mtUMe6oW9muU",
-      "QmYNBRkrP4kwQVRmPSaaSEVUg3NXArA63v5d9J68UfJMg6",
-      "QmSYUjoh5ptNiL2ZKkmADjweHC7FbRWo9ZVLjFjWKWSQ1G",
-      "Qmf9ETausmHGse2BGjwZBX4QB7iMHR8QsMsubqNTeR8odQ"
-    ];
 
     const version = 5;
     // Obviously make a migration procedure in the future
@@ -65,7 +53,9 @@ export default class App extends Component {
 
     // This is all a temporary hack
     const id = localStorage.getItem("id");
-    const icon = localStorage.getItem("icon") || rand(icons);
+    const icon =
+      localStorage.getItem("icon") ||
+      "QmYwTwYjhDzebM9E6rucYHdXUhKYEa7LHq5Sfkd9dfS3or";
     if (!localStorage.getItem("icon")) localStorage.setItem("icon", icon);
     const canopy = localStorage.getItem("canopy");
     const bio = localStorage.getItem("bio") || "";
