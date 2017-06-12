@@ -544,7 +544,9 @@ export default class App extends Component {
                 post => post.author.id === match.params.id
               );
               const profile = profiles[match.params.id];
-              const following = profile ? Object.keys(profile.following) : [];
+              const following = profile && typeof profile === "object"
+                ? Object.keys(profile.following)
+                : [];
               const isSelf = match.params.id === this.state.id;
 
               return (

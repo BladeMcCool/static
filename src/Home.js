@@ -137,7 +137,7 @@ export default class Home extends Component {
             }
 
           </div>
-          <div>
+          <div className="mw75">
             <PostEditor
               ref="editor"
               name={this.props.name || "Anonymous"}
@@ -151,7 +151,7 @@ export default class Home extends Component {
             {posts.sort((a, b) => b.date - a.date).map(post => {
               return (
                 <Post
-                  key={post.author.id + post.date_published}
+                  key={post.hash}
                   author={profiles[post.author.id]}
                   content={post.content}
                   date={post.date}

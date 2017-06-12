@@ -179,7 +179,7 @@ class Post extends Component {
               className="star pointer overflow-visible pa0 bg-transparent bn"
               aria-label="Star"
               onClick={event => {
-                this.toggleStarred();
+                // this.toggleStarred();
                 this.refs.star.blur();
               }}
             >

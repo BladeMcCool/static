@@ -23,6 +23,7 @@
     "react-howler": "^3.6.2",
     "react-input-autosize": "^1.1.4",
     "react-router-dom": "^4.1.1",
+    "react-router-scroll": "^0.4.2",
     "react-textarea-autosize": "^5.0.6"
   },
   "devDependencies": {
