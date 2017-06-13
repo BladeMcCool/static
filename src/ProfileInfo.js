@@ -4,14 +4,14 @@ import Textarea from "react-textarea-autosize";
 
 export default class ProfileInfo extends Component {
 	render() {
-		const { profile, editing, onEdit } = this.props;
+		const { profile, online, editing, onEdit, isFollowing } = this.props;
 		const { id, icon, name, bio, location, website } = profile;
 
 		return (
 			<div className="mh2 ba b--transparent pa3 minw5">
 				<div className="w5">
 					<div
-						className="mtn6 mln1  overflow-hidden ba b--white bw2 h45-ns w45-ns h3 w3 br4 cover bg-light-gray"
+						className="mtn6 mln1 overflow-hidden ba b--white bw2 h45-ns w45-ns h3 w3 br4 cover bg-light-gray"
 						style={
 							icon
 								? { backgroundImage: `url('https://ipfs.io/ipfs/${icon}` }
@@ -49,9 +49,35 @@ export default class ProfileInfo extends Component {
 									onChange={event => onEdit(event, "name")}
 									value={name}
 								/>
-							: <h1 className="ma2 f4">
+							: <h1 className={`ma2 flex ${online ? "mb1" : null} f4`}>
 									{name || "Anonymous"}
+									{isFollowing
+										? <span>
+												<svg
+													className="pl1"
+													fill="#5856D6"
+													width="20px"
+													viewBox="0 0 17 17"
+												>
+													<path
+														d="M16.67,8.06 L15.59,6.72 C15.42,6.5 15.31,6.24 15.28,5.95 L15.09,4.25 C15.01,3.55 14.46,3 13.76,2.92 L12.06,2.73 C11.76,2.7 11.5,2.57 11.28,2.4 L9.94,1.32 C9.39,0.88 8.61,0.88 8.06,1.32 L6.72,2.4 C6.5,2.57 6.24,2.68 5.95,2.71 L4.25,2.9 C3.55,2.98 3,3.53 2.92,4.23 L2.73,5.93 C2.7,6.23 2.57,6.49 2.4,6.71 L1.32,8.05 C0.88,8.6 0.88,9.38 1.32,9.93 L2.4,11.27 C2.57,11.49 2.68,11.75 2.71,12.04 L2.9,13.74 C2.98,14.44 3.53,14.99 4.23,15.07 L5.93,15.26 C6.23,15.29 6.49,15.42 6.71,15.59 L8.05,16.67 C8.6,17.11 9.38,17.11 9.93,16.67 L11.27,15.59 C11.49,15.42 11.75,15.31 12.04,15.28 L13.74,15.09 C14.44,15.01 14.99,14.46 15.07,13.76 L15.26,12.06 C15.29,11.76 15.42,11.5 15.59,11.28 L16.67,9.94 C17.11,9.39 17.11,8.61 16.67,8.06 L16.67,8.06 Z M7.5,13 L4,9.5 L5.5,8 L7.5,10 L12.5,5 L14,6.55 L7.5,13 L7.5,13 Z"
+														id="Shape"
+														stroke="none"
+													/>
+												</svg>
+											</span>
+										: null}
 								</h1>}
+
+						{online
+							? <span
+									className={
+										"pl2 mb2 fw5 nowrap connected f5 flex items-center"
+									}
+								>
+									online
+								</span>
+							: null}
 
 						<h2 className="mt0 mb2 pl2 mt0 f6 tl fw4 light-silver break-all">
 							@<span>{id}</span>

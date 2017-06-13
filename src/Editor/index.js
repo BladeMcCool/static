@@ -216,7 +216,7 @@ class MyEditor extends React.Component {
             : null}
         </ReactCSSTransitionGroup>
         <div id="editor" className="z-4 mw-post-ns mh2 w-100   b--transparent">
-          <div className=" center bg-white ba-ns bb b--light-gray br2-ns">
+          <div className="w-100 bg-white ba-ns bb b--light-gray br2-ns">
             {
               <div className="pa3 fw6 w-100 flex flex-row items-start justify-between">
                 <div className="flex items-center">

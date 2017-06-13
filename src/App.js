@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import async from "async-es";
-import format from "date-fns/format";
 // import Metascraper from "metascraper";
 
 // import isIPFS from "is-ipfs";
@@ -76,7 +75,8 @@ export default class App extends Component {
       website,
       profiles,
       following,
-      peers: []
+      peers: [],
+      onlinePeers: []
     };
 
     const t = this;
@@ -86,6 +86,8 @@ export default class App extends Component {
         node.pubsub.subscribe("static.network", this.handleMessage);
         this.updatePeerCount();
         setInterval(this.updatePeerCount.bind(this), 1000);
+
+        setInterval(this.updateOnlinePeers.bind(this), 5000);
 
         setTimeout(this.broadcastLastPost.bind(this), 5000);
         setInterval(this.broadcastLastPost.bind(this), 60 * 1000);
@@ -152,6 +154,13 @@ export default class App extends Component {
           this.setState({ peers: peers });
       })
       .catch(err => console.error(err));
+  }
+
+  updateOnlinePeers() {
+    node.pubsub.peers("static.network", (err, peers) => {
+      if (err) console.error(err);
+      else this.setState({ onlinePeers: peers });
+    });
   }
 
   broadcastLastPost() {
@@ -483,6 +492,7 @@ export default class App extends Component {
   render() {
     const {
       peers,
+      onlinePeers,
       profiles,
       posts,
       name,
@@ -502,8 +512,9 @@ export default class App extends Component {
           <Header
             connectionError={this.state.error}
             peerCount={peers.length}
-            name={name}
+            name={profiles[id] ? profiles[id].name : "Anonymous"}
             icon={icon}
+            profile={profiles[id]}
             id={id}
           />
 
@@ -513,6 +524,7 @@ export default class App extends Component {
             render={props => (
               <Home
                 peerCount={peers.length}
+                onlinePeers={onlinePeers}
                 posts={posts}
                 profiles={profiles}
                 connectionError={this.state.error}
@@ -545,6 +557,10 @@ export default class App extends Component {
                   onEdit={this.handleEdit.bind(this)}
                   posts={filteredPosts}
                   profile={profiles[match.params.id]}
+                  online={
+                    onlinePeers.indexOf(match.params.id) !== -1 // TODO warning really bad obviously
+                  }
+                  isFollowing={this.state.following[match.params.id]}
                   editing={isSelf && editing}
                 >
 

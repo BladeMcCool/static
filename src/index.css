@@ -16,6 +16,17 @@ body {
    transform: translate(-50%, -200%);
 }*/
 
+.self-start {
+  align-self: flex-start;
+}
+
+
+@media screen and (min-width:78em) {
+  .db-xl {
+    display: block;
+  }
+}
+
 .dimmed:before {
   content: '';
   position: absolute;
@@ -196,6 +207,10 @@ body {
 
 .mt35 {
   margin-top: 1.75rem;
+}
+
+.pt05 {
+  padding-top: 0.0625rem;
 }
 
 .blurred { 

@@ -71,7 +71,7 @@ export default class Header extends Component {
         <div className="flex flex-row items-center justify-end">
           <div className="h2 flex flex-row items-center">
             <Link
-              to={`/@${id}`}
+              to={id ? `/@${id}` : "#"}
               className="link mv0 mr1 f6 fw6 near-black flex flex-row items-start"
             >
               <div

@@ -22,7 +22,7 @@ export default class ProfileHeader extends Component {
             }
             style={{
               backgroundImage: canopy
-                ? `url('https://ipfs.io/ipfs/${canopy}`
+                ? `url('https://ipfs.io/ipfs/${canopy || "#"}`
                 : "none"
             }}
           >

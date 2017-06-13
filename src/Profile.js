@@ -5,7 +5,14 @@ import ProfileInfo from "./ProfileInfo";
 
 export default class Profile extends Component {
     render() {
-        const { id, editing, profile, onEdit } = this.props;
+        const {
+            id,
+            editing,
+            profile,
+            online,
+            onEdit,
+            isFollowing
+        } = this.props;
 
         if (id.length !== 46)
             return (
@@ -20,7 +27,7 @@ export default class Profile extends Component {
             return (
                 <div className="bg-bright-blue pa3 flex items-center justify-center">
                     <span className="white bg-bright-blue wrap-all">
-                        Linking to profiles like this requires ipns.
+                        @{id}
                     </span>
                 </div>
             );
@@ -37,6 +44,8 @@ export default class Profile extends Component {
                 <div className="flex-ns justify-center mb5 mh3-ns">
                     <ProfileInfo
                         profile={profile}
+                        online={online}
+                        isFollowing={isFollowing}
                         editing={editing}
                         onEdit={onEdit}
                     />
