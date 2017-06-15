@@ -47,7 +47,7 @@ export default class ProfileInfo extends Component {
 									style={{ resize: "none" }}
 									placeholder="Name"
 									onChange={event => onEdit(event, "name")}
-									value={name}
+									value={name || ""}
 								/>
 							: <h1 className={`ma2 flex ${online ? "mb1" : null} f4`}>
 									{name || "Anonymous"}

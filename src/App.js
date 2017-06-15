@@ -35,10 +35,12 @@ export default class App extends Component {
 
     const name = localStorage.getItem("name");
 
-    const version = 5;
+    const version = 6;
     // Obviously make a migration procedure in the future
     if (version > localStorage.getItem("version")) {
-      if (version === 5) {
+      if (version === 6) {
+        localStorage.removeItem("posts");
+      } else if (version === 5) {
         localStorage.removeItem("following");
       } else if (version === 3) {
         localStorage.removeItem("posts");
@@ -85,8 +87,10 @@ export default class App extends Component {
       .on("start", () => {
         node.pubsub.subscribe("static.network", this.handleMessage);
         this.updatePeerCount();
+
         setInterval(this.updatePeerCount.bind(this), 1000);
 
+        this.updateOnlinePeers();
         setInterval(this.updateOnlinePeers.bind(this), 5000);
 
         setTimeout(this.broadcastLastPost.bind(this), 5000);
@@ -245,6 +249,7 @@ export default class App extends Component {
   }
 
   handleMessage(msg) {
+    console.log(msg);
     // TODO first make sure data is correct length of hash!!
     const hash = msg.data.toString();
 

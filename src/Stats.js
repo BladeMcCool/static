@@ -72,13 +72,23 @@ export default class Stats extends Component {
             <div className="h3 flex items-center">
               {isSelf
                 ? <button
-                    onClick={onToggleEdit}
+                    onClick={event => {
+                      console.log(this.refs.button);
+                      // this.refs.button.blur();
+                      //remove hover
+                      onToggleEdit(event);
+                    }}
+                    ref="button"
                     className={`btn pointer br2 pv2 ph3 f6 fw6 ba bw05 bg-white ${editing ? "b--bright-blue bright-blue hover-bg-bright-blue-05" : "b--silver silver hover-bg-black-05"}`}
                   >
                     {editing ? "Done" : "Edit profile"}
                   </button>
                 : <button
-                    onClick={onFollow}
+                    onClick={event => {
+                      this.refs.button.blur();
+                      onFollow(event);
+                    }}
+                    ref="button"
                     className={`btn pointer br2 pv2 ph3 f6 fw6 ba bw05 b--purple ${isFollowing ? "bg-purple white" : "bg-white purple"}`}
                   >
                     {isFollowing ? "Following" : "Follow"}

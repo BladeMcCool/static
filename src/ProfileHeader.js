@@ -17,7 +17,7 @@ export default class ProfileHeader extends Component {
           <div
             className={
               editing || canopy
-                ? "w-100 h5-ns h4 bg-light-gray cover bg-center"
+                ? "w-100 h6-xl h5-ns h4 bg-light-gray cover bg-center"
                 : "w-100 h4 bg-near-black cover bg-center"
             }
             style={{

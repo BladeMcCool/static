@@ -40,7 +40,7 @@ export default class Home extends Component {
         onDragLeave={this.handleDragLeave.bind(this)}
       >
         <div className="flex justify-center items-start">
-          <div className="minw5 dn db-l mw-post mv3 ml2-l  br3-l overflow-hidden ba b--light-gray bg-white">
+          <div className="minw5 dn db-l mw-post mv3 mh2-l  br3-l overflow-hidden ba b--light-gray bg-white">
             <Link to={id ? `/@${id}` : "#"}>
               <div
                 className={`h35 w-100 cover bg-center ${selfProfile.canopy ? "bg-light-gray" : "bg-near-black"}`}
@@ -154,8 +154,8 @@ export default class Home extends Component {
             }
 
           </div>
-          <div className="mw75 flex">
-            <div>
+          <div className="mw75 flex w-100">
+            <div className="w-100 bl br b--transparent">
               <PostEditor
                 ref="editor"
                 name={selfProfile.name || "Anonymous"}
@@ -179,11 +179,15 @@ export default class Home extends Component {
                 );
               })}
             </div>
-            <div className="dn db-xl pa3 br2 ba b--light-gray mt3 bg-white self-start">
+            <div className="dn db-xl pa3 mh2 br2 ba b--light-gray mt3 bg-white self-start">
               <div className="w5">
-                <h2 className="f7 ttu silver mt0 mb2">Online</h2>
-                {onlinePeers
-                  ? <ul className="list pa0 ma0">
+                <h2 className="f7 ttu silver mv0">
+                  {onlinePeers.length
+                    ? `${onlinePeers.length} people online`
+                    : "Nobody online"}
+                </h2>
+                {onlinePeers.length
+                  ? <ul className="list pa0 ma0 mt2">
                       {onlinePeers.map(peerID => (
                         <li className="mv1" key={peerID}>
                           <span>
