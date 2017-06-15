@@ -20,8 +20,14 @@ body {
   align-self: flex-start;
 }
 
+@media screen and (min-width:80em){
+.h6-xl {
+  height: 20rem;
+}
+}
 
-@media screen and (min-width:78em) {
+
+@media screen and (min-width:80em) {
   .db-xl {
     display: block;
   }
@@ -137,7 +143,7 @@ body {
 }
 
 
-@media screen and (min-width:78em) {
+@media screen and (min-width:80em) {
 
 .mw75 {
   max-width: 918px;
