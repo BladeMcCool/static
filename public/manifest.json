@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Static",
+  "name": "A peer-to-peer hypermedia network.",
   "icons": [
     {
       "src": "favicon.ico",
