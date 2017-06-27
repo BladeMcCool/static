@@ -1,25 +1,18 @@
-Static is a peer-to-peer hypermedia network built on IPFS.
+## Installation
 
+In the project directory, run `npm install` to install all dependencies.
 
+## Development
 
-### The Plan
+### `npm start`
 
-Posts are json objects of the form
-`js
-{
-	"author": "QmWMj8HGFb3LDZjYQ495Zk61DRYpfjWNYePhzobR7JWJRk",
-	"content": "QmYAvkvECmrEikqsDWP7mjRDVUtN3NitFqGcR9zuQrE3wx",
-	"date": "1497568468238",
-}
-`
+Runs the app in the development mode.<br>
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Profiles
-{
-	"name": "Oliver",
-	"icon": "QmeeLesoehZQ2iNPBRaGQ62L8B3nUmRainL6GNS8vc1yrZ",
-	"background": "QmeeLesoehZQ2iNPBRaGQ62L8B3nUmRainL6GNS8vc1yrZ",
-	"following": "QmeeLesoehZQ2iNPBRaGQ62L8B3nUmRainL6GNS8vc1yrZ",
-	"date": "1497568468238"
-}
+The page will reload if you make edits.<br>
+You will also see any lint errors in the console.
 
-Following
+### `npm run build`
+
+Builds the app for production to the `build` folder.<br>
+It correctly bundles React in production mode and optimizes the build for the best performance.
