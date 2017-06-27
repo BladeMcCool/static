@@ -1,3 +1,5 @@
+![Static Homepage](https://github.com/staticnetwork/static/blob/master/img/screenshot.png)
+
 ## Installation
 
 In the project directory, run `npm install` to install all dependencies.
