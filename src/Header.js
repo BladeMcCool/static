@@ -19,9 +19,9 @@ export default class Header extends Component {
   }
 
   render() {
-    const { peerCount, icon, connectionError, id, name } = this.props;
+    const { peerCount, icon, connected, id, name, color } = this.props;
     return (
-      <header className="bg-white w-100 b--light-gray w-75 pa3 z-999 flex flex-row justify-between items-center">
+      <header className="bg-white w-100 b--light-gray w-75 ph3 pv2 z-999 flex flex-row justify-between items-center">
         <div className="flex-auto flex flex-row items-center">
           <Link to="/" className="near-black f4 fw5 ttu sans-serif tl link">
             <svg fill="#111" width="15px" height="24px" viewBox="0 0 10 16">
@@ -48,11 +48,20 @@ export default class Header extends Component {
                     <ul className="pa0 ma0 list">
                       <li className="f6 gray flex items-center">
                         <div
-                          className="pointer h2 w2 br2 cover bg-light-gray"
                           style={{
-                            backgroundImage: `url('https://ipfs.io/ipfs/${icon}')`
+                            backgroundColor: color ? `#${color}` : "#111"
                           }}
-                        />
+                          className="overflow-hidden pointer h2 w2 br2 cover bg-light-gray"
+                        >
+                          <div
+                            className="h-100 w-100 cover"
+                            style={{
+                              backgroundImage: icon
+                                ? `url('https://ipfs.io/ipfs/${icon}')`
+                                : null
+                            }}
+                          />
+                        </div>
                         <div className="ml2 h2 flex flex-column justify-between">
                           <span className="db f6 fw6 near-black">Oliver</span>
                           <span className="db f7 silver">
@@ -75,11 +84,20 @@ export default class Header extends Component {
               className="link mv0 mr1 f6 fw6 near-black flex flex-row items-start"
             >
               <div
-                className="pointer h2 w2 br2 cover bg-light-gray"
                 style={{
-                  backgroundImage: `url('https://ipfs.io/ipfs/${icon}')`
+                  backgroundColor: color ? `#${color}` : "#111"
                 }}
-              />
+                className="overflow-hidden pointer h2 w2 br2 bg-light-gray"
+              >
+                <div
+                  className="h-100 w-100 cover bg-center"
+                  style={{
+                    backgroundImage: icon
+                      ? `url('https://ipfs.io/ipfs/${icon}')`
+                      : null
+                  }}
+                />
+              </div>
 
               <div className="ml2 flex flex-column">
                 <span className="nowrap pa0 f6 fw6 near-black">
@@ -87,9 +105,9 @@ export default class Header extends Component {
                 </span>
 
                 <span
-                  className={`fw5 nowrap ${connectionError ? "offline" : peerCount > 0 ? "connected" : "connecting"} f6`}
+                  className={`fw5 nowrap ${!connected ? "offline" : peerCount > 0 ? "connected" : "connecting"} f6`}
                 >
-                  {connectionError
+                  {!connected
                     ? "offline"
                     : peerCount > 0 ? "online" : "connecting..."}
                 </span>

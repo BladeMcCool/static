@@ -21,7 +21,8 @@ const node = new window.Ipfs({
   EXPERIMENTAL: {
     pubsub: true,
     dht: true
-  }
+  },
+  start: true
 });
 
 export default class App extends Component {
@@ -54,9 +55,7 @@ export default class App extends Component {
 
     // This is all a temporary hack
     const id = localStorage.getItem("id");
-    const icon =
-      localStorage.getItem("icon") ||
-      "QmYwTwYjhDzebM9E6rucYHdXUhKYEa7LHq5Sfkd9dfS3or";
+    const icon = localStorage.getItem("icon");
     if (!localStorage.getItem("icon")) localStorage.setItem("icon", icon);
     const canopy = localStorage.getItem("canopy");
     const bio = localStorage.getItem("bio") || "";
@@ -145,9 +144,28 @@ export default class App extends Component {
             }
           })
           .catch(err => console.error(err));
-
-        t.setState({ error });
       });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    // all the state stuff is gonna go away with redux
+    if (nextState.id !== this.state.id) return true;
+    if (nextState.name !== this.state.name) return true;
+    if (nextState.icon !== this.state.icon) return true;
+    if (nextState.posts !== this.state.posts) return true;
+    if (nextState.canopy !== this.state.canopy) return true;
+    if (nextState.bio !== this.state.bio) return true;
+    if (nextState.location !== this.state.location) return true;
+    if (nextState.website !== this.state.website) return true;
+    if (nextState.profiles !== this.state.profiles) return true;
+    if (nextState.following !== this.state.following) return true;
+    if (nextState.peers !== this.state.peers) return true;
+    if (nextState.onlinePeers !== this.state.onlinePeers) return true;
+    if (nextState.showEditor !== this.state.showEditor) return true;
+    if (nextState.editing !== this.state.editing) return true;
+    if (nextState.color !== this.state.color) return true;
+
+    return true;
   }
 
   updatePeerCount() {
@@ -175,15 +193,66 @@ export default class App extends Component {
         new Buffer(lastPost),
         (err, res) => {
           if (err) console.error(err);
-          else console.log("Republished");
         }
       );
     }
   }
 
-  handleHash(hash) {
+  handlePost(post, hash) {
+    const { author, previous } = post;
+
+    post.hash = hash;
+
+    // TODO display a warning if a trusted user has changed their name
+
+    // !!! DANGEROUS !!! SAFETY CHECKS NEEDED
+    let newProfiles = this.state.profiles;
+
+    // If unseen profile, just add it to the store
+    // If not, make sure this is new information
+    if (!newProfiles[author.id]) {
+      newProfiles[author.id] = author;
+      newProfiles[author.id].lastUpdate = Date.now();
+    } else if (
+      !this.state.profiles[author.id].lastUpdate ||
+      post.date > this.state.profiles[author.id].lastUpdate
+    ) {
+      // TODO display warning flag next to name until user confirms changes
+      newProfiles[author.id] = author;
+      newProfiles[author.id].lastUpdate = Date.now();
+    }
+
+    // }
+    this.setState({
+      profiles: newProfiles,
+      posts: [post, ...this.state.posts]
+    });
+    localStorage.setItem("posts", JSON.stringify(this.state.posts));
+    localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
+
+    // Do some more safety checks here obviously
+    // if (isIPFS.multihash(previous)) { //
+    if (previous && previous.length === 46) this.handleHash(previous);
+    // }
+  }
+
+  handleHash(hash, currentDelay) {
+    if (hash.length !== 46) return console.error("Invalid hash");
     // Ignore posts we have seen
     if (this.postByHash(hash).length) return;
+
+    if (!node.isOnline()) {
+      setTimeout(
+        () => this.handleHash(hash, currentDelay * 2 || 1000),
+        currentDelay * 2 || 1000
+      );
+
+      // TODO setup gateway on static.network to avoid CORS issues
+      // fetch("https://static.network/ipfs/" + hash).then((err, res) => {
+      //   console.log(err, res);
+      // });
+      return;
+    }
 
     node.files.cat(hash, (err, stream) => {
       var res = "";
@@ -197,6 +266,10 @@ export default class App extends Component {
       });
 
       stream.on("end", () => {
+        // Safety check -- Ignore posts we have seen
+        // This shouldn't have to be here
+        if (this.postByHash(hash).length) return;
+
         let post;
         try {
           post = JSON.parse(res);
@@ -204,42 +277,7 @@ export default class App extends Component {
           return console.error("Could not parse post", err);
         }
 
-        const { author, previous } = post;
-
-        post.hash = hash;
-
-        // TODO display a warning if a trusted user has changed their name
-
-        // !!! DANGEROUS !!! SAFETY CHECKS NEEDED
-        let newProfiles = this.state.profiles;
-
-        // If unseen profile, just add it to the store
-        // If not, make sure this is new information
-        if (!newProfiles[author.id]) {
-          newProfiles[author.id] = author;
-          newProfiles[author.id].lastUpdate = Date.now();
-        } else if (
-          !this.state.profiles[author.id].lastUpdate ||
-          post.date > this.state.profiles[author.id].lastUpdate
-        ) {
-          console.log("updating", newProfiles[author.id], author);
-          // TODO display warning flag next to name until user confirms changes
-          newProfiles[author.id] = author;
-          newProfiles[author.id].lastUpdate = Date.now();
-        }
-
-        // }
-        this.setState({
-          profiles: newProfiles,
-          posts: [post, ...this.state.posts]
-        });
-        localStorage.setItem("posts", JSON.stringify(this.state.posts));
-        localStorage.setItem("profiles", JSON.stringify(this.state.profiles));
-
-        // Do some more safety checks here obviously
-        // if (isIPFS.multihash(previous)) { //
-        if (previous && previous.length === 46) this.handleHash(previous);
-        // }
+        this.handlePost(post, hash);
       });
     });
   }
@@ -249,7 +287,6 @@ export default class App extends Component {
   }
 
   handleMessage(msg) {
-    console.log(msg);
     // TODO first make sure data is correct length of hash!!
     const hash = msg.data.toString();
 
@@ -374,7 +411,8 @@ export default class App extends Component {
               bio: this.state.bio,
               location: this.state.location,
               website: this.state.website,
-              following: this.state.following
+              following: this.state.following,
+              color: this.state.profiles[this.state.id].color
             },
             content: content,
             date: Date.now(),
@@ -405,6 +443,20 @@ export default class App extends Component {
         pub(res);
       }
     });
+  }
+
+  onLike(event, hash) {
+    if (!hash) return;
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    // TODO: Super inefficient, obviously fix this
+    const currentIndex = this.state.likes.indexOf(hash);
+    if (currentIndex !== -1) {
+      // this.setState({likes: {}})
+    }
   }
 
   toggleEdit(event) {
@@ -515,11 +567,12 @@ export default class App extends Component {
           onDragLeave={this.handleDragLeave.bind(this)}
         >
           <Header
-            connectionError={this.state.error}
+            connected={node.isOnline()}
             peerCount={peers.length}
             name={profiles[id] ? profiles[id].name : "Anonymous"}
             icon={icon}
             profile={profiles[id]}
+            color={profiles[id] ? profiles[id].color : null}
             id={id}
           />
 
@@ -532,7 +585,7 @@ export default class App extends Component {
                 onlinePeers={onlinePeers}
                 posts={posts}
                 profiles={profiles}
-                connectionError={this.state.error}
+                connected={node.isOnline()}
                 onPublish={this.publish}
                 icon={icon}
                 canopy={canopy}
@@ -541,6 +594,57 @@ export default class App extends Component {
                 following={following}
               />
             )}
+          />
+
+          <Route
+            exact
+            path="/p/:hash"
+            render={({ match }) => {
+              const { hash } = match.params;
+
+              // use is-ipfs
+              if (!hash || hash.length !== 46)
+                return (
+                  <div className="mt3 flex justify-center">
+                    <span>Invalid hash</span>
+                  </div>
+                );
+
+              //TODO just go straight to ipfs
+              const matchingPosts = posts.filter(post => hash === post.hash);
+
+              if (matchingPosts.length === 0) {
+                this.handleHash(hash);
+                return (
+                  <div className="mt2-ns flex justify-center">
+                    <article
+                      className={`pa3 z-6 mw-post-ns w-100 mh2-ns mt2-ns mv0 bg-white br2-ns ba-ns bb b--light-gray`}
+                    >
+                      <div className="fw6 w-100 flex items-start justify-between">
+                        <div className="h2 w-100 flex items-center">
+                          <div className="h2 w2 br2 bg-light-gray" />
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+                );
+              }
+
+              const post = matchingPosts[0];
+              const profile = profiles[post.author.id];
+              return (
+                <div className="flex mt2 pb5 justify-center">
+                  <Post
+                    key={post.author.id + post.date}
+                    author={profile}
+                    content={post.content}
+                    date={post.date}
+                    hash={post.hash}
+                    selfIcon={icon}
+                  />
+                </div>
+              );
+            }}
           />
 
           <Route
@@ -566,6 +670,7 @@ export default class App extends Component {
                     onlinePeers.indexOf(match.params.id) !== -1 // TODO warning really bad obviously
                   }
                   isFollowing={this.state.following[match.params.id]}
+                  isSelf={match.params.id === this.state.id}
                   editing={isSelf && editing}
                 >
 
@@ -582,6 +687,7 @@ export default class App extends Component {
                           match={match}
                           postCount={filteredPosts.length}
                           followingCount={following.length}
+                          color={profile.color}
                           selected="posts"
                           editing={isSelf && editing}
                           isFollowing={this.state.following[match.params.id]}
@@ -589,15 +695,17 @@ export default class App extends Component {
                           onFollow={() => this.toggleFollow(match.params.id)} // move to redux
                           onToggleEdit={this.toggleEdit.bind(this)}
                         />
-                        <div className="mt3">
+                        <div className="mt2 bl br b--transparent">
                           {filteredPosts.map(post => {
                             return (
                               <Post
-                                key={post.author.id + post.date}
+                                key={post.hash}
                                 author={profile}
                                 content={post.content}
                                 date={post.date}
-                                selfIcon={profile.icon}
+                                hash={post.hash}
+                                selfIcon={icon}
+                                onLike={this.onLike.bind(this)}
                               />
                             );
                           })}
@@ -609,7 +717,7 @@ export default class App extends Component {
                   <Route
                     path={`${match.url}/following`}
                     render={() => (
-                      <div>
+                      <div className="minh-100">
                         {
                           // Figure out how to not duplicate this (see above)
                         }
@@ -617,6 +725,7 @@ export default class App extends Component {
                           match={match}
                           postCount={filteredPosts.length}
                           followingCount={following.length}
+                          color={profile.color}
                           selected="following"
                           editing={isSelf && editing}
                           isSelf={isSelf}
@@ -624,7 +733,7 @@ export default class App extends Component {
                           onFollow={() => this.toggleFollow(match.params.id)} // move to redux
                           onToggleEdit={this.toggleEdit.bind(this)}
                         />
-                        <div className="mt2">
+                        <div className="mt2 h-100">
                           {following.map(followingId => (
                             <ProfileCard
                               key={followingId}
@@ -632,6 +741,11 @@ export default class App extends Component {
                                 this.state.profiles[followingId] || {
                                   id: followingId // TODO fix temporary hack
                                 }
+                              }
+                              buttonColor={
+                                this.state.profiles[match.params.id]
+                                  ? this.state.profiles[match.params.id].color
+                                  : null
                               }
                               isSelf={match.params.id === this.state.id}
                               isFollowing={this.state.following[followingId]}

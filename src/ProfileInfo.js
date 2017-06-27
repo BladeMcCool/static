@@ -4,37 +4,61 @@ import Textarea from "react-textarea-autosize";
 
 export default class ProfileInfo extends Component {
 	render() {
-		const { profile, online, editing, onEdit, isFollowing } = this.props;
-		const { id, icon, name, bio, location, website } = profile;
+		const {
+			profile,
+			online,
+			editing,
+			onEdit,
+			isFollowing,
+			isSelf
+		} = this.props;
+		const { id, icon, name, bio, location, website, color } = profile;
 
 		return (
 			<div className="mh2 ba b--transparent pa3 minw5">
 				<div className="w5">
 					<div
-						className="mtn6 mln1 overflow-hidden ba b--white bw2 h45-ns w45-ns h3 w3 br4 cover bg-light-gray"
-						style={
-							icon
-								? { backgroundImage: `url('https://ipfs.io/ipfs/${icon}` }
-								: null
-						}
+						style={{ backgroundColor: color ? `#${color}` : "#111" }}
+						className="mtn6-ns mtn3 mln1 overflow-hidden ba b--white bw2 h45-ns w45-ns h35 w35 br4 bg-light-gray"
 					>
-						<input
-							type="file"
-							name="iconPicker"
-							id="iconPicker"
-							className="dn"
-							onChange={event => onEdit(event, "icon")}
-						/>
-						{editing
-							? <label
-									htmlFor="iconPicker"
-									className="flex items-center justify-center w-100 h-100 pointer bg-black-50 bn w-100 h-100"
-								>
-									<p className="tc btn white lh-copy pointer bn br1 pv2 ph2 f5 fw6">
-										Change your profile photo
-									</p>
-								</label>
-							: null}
+						<div
+							className="h-100 w-100 cover bg-center"
+							style={
+								icon
+									? { backgroundImage: `url('https://ipfs.io/ipfs/${icon}` }
+									: null
+							}
+						>
+							<input
+								type="file"
+								name="iconPicker"
+								id="iconPicker"
+								className="dn"
+								onChange={event => onEdit(event, "icon")}
+							/>
+							{editing || (!icon && isSelf)
+								? <label
+										htmlFor="iconPicker"
+										className={`flex flex-column items-center justify-center w-100 h-100 pointer  bn w-100 h-100 ${icon ? "bg-black-50" : ""}`}
+									>
+
+										<svg className="mv2" width="32px" viewBox="0 0 16 12">
+											<path
+												d="M15,1 L7,1 C7,0.45 6.55,0 6,0 L2,0 C1.45,0 1,0.45 1,1 C0.45,1 0,1.45 0,2 L0,11 C0,11.55 0.45,12 1,12 L15,12 C15.55,12 16,11.55 16,11 L16,2 C16,1.45 15.55,1 15,1 L15,1 Z M6,3 L2,3 L2,2 L6,2 L6,3 L6,3 Z M10.5,10 C8.56,10 7,8.44 7,6.5 C7,4.56 8.56,3 10.5,3 C12.44,3 14,4.56 14,6.5 C14,8.44 12.44,10 10.5,10 L10.5,10 Z M13,6.5 C13,7.88 11.87,9 10.5,9 C9.13,9 8,7.87 8,6.5 C8,5.13 9.13,4 10.5,4 C11.87,4 13,5.13 13,6.5 L13,6.5 Z"
+												id="Shape"
+												stroke="none"
+												fill="#FFF"
+												fill-rule="nonzero"
+											/>
+										</svg>
+										<p className="ma0 tc btn white lh-copy pointer bn br1 pv2 ph2 f5 fw6">
+											{icon && isSelf
+												? "Change your profile photo"
+												: "Add a profile photo"}
+										</p>
+									</label>
+								: null}
+						</div>
 					</div>
 
 					{
@@ -55,7 +79,7 @@ export default class ProfileInfo extends Component {
 										? <span>
 												<svg
 													className="pl1"
-													fill="#5856D6"
+													fill={`#${color || "5856D6"}`}
 													width="20px"
 													viewBox="0 0 17 17"
 												>
@@ -152,16 +176,72 @@ export default class ProfileInfo extends Component {
 												rel="noopener noreferrer"
 												target="_blank"
 												className="link ma0 mb0 w-100 tl lh-copy measure f6 blue"
+												style={{ color: color ? `#${color}` : null }}
 											>
 												{website}
 											</a>
 										</div>
 									: null}
 
+						{editing
+							? <div className="br2 overflow-hidden ba b--light-gray flex items-center bg-white mv1">
+									<div
+										onClick={event =>
+											onEdit({ target: { value: "e7040f" } }, "color")}
+										className="pointer h2 w2 bg-dark-red"
+									/>
+									<div
+										onClick={event =>
+											onEdit({ target: { value: "ff6300" } }, "color")}
+										className="pointer h2 w2 bg-orange"
+									/>
+									<div
+										onClick={event =>
+											onEdit({ target: { value: "ffd700" } }, "color")}
+										className="pointer h2 w2 bg-yellow"
+									/>
+									<div
+										onClick={event =>
+											onEdit({ target: { value: "19a974" } }, "color")}
+										className="pointer h2 w2 bg-green"
+									/>
+									<div
+										onClick={event =>
+											onEdit({ target: { value: "357edd" } }, "color")}
+										className="pointer h2 w2 bg-blue"
+									/>
+									<div
+										onClick={event =>
+											onEdit({ target: { value: "5856D6" } }, "color")}
+										className="pointer h2 w2 bg-purple"
+									/>
+									<input
+										className="ttu w3 pa2 bn tl f6 near-black"
+										style={{
+											backgroundColor: color &&
+												(color.length === 6 || color.length === 3)
+												? `#${color}`
+												: null,
+											color: color && (color.length === 6 || color.length === 3)
+												? "#FFF"
+												: null,
+											resize: "none"
+										}}
+										placeholder="#"
+										onChange={event => {
+											const color = event.target.value;
+											const isValidColor = color.length <= 6;
+											if (isValidColor) onEdit(event, "color");
+										}}
+										value={color}
+									/>
+								</div>
+							: null}
+
 						<span className="pl2 mv1 f6 near-black flex items-center">
 							<svg
 								className="mr2"
-								fill="#555"
+								fill={color}
 								width="13px"
 								height="14px"
 								viewBox="0 0 13 14"
@@ -174,6 +254,9 @@ export default class ProfileInfo extends Component {
 								/>
 							</svg>
 							Joined June 2017
+							{
+								// todo make this real
+							}
 						</span>
 					</div>
 				</div>
