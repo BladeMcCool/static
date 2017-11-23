@@ -1,0 +1,26 @@
+{
+  "name": "static",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "async-es": "^2.6.0",
+    "draft-js": "^0.10.4",
+    "ipfs": "^0.26.0",
+    "markdown-to-jsx": "^5.4.2",
+    "moment": "^2.19.2",
+    "music-metadata": "^0.6.3",
+    "react": "^16.1.1",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-dom": "^16.1.1",
+    "react-howler": "^3.6.4",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.17",
+    "react-textarea-autosize": "^5.2.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
