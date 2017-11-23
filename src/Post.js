@@ -196,7 +196,7 @@ class Post extends Component {
                   <g
                     id="chevron-down"
                     stroke="none"
-                    stroke-width="1"
+                    strokeWidth="1"
                     transform="translate(0.000000, 4.000000)"
                   >
                     <path

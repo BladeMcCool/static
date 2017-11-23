@@ -259,9 +259,9 @@ export default class MyEditor extends React.Component {
                 }}
                 editorState={this.state.editorState}
                 blockRendererFn={this.blockRenderer}
-                autoCapitalize={false}
-                autoComplete={false}
-                autoCorrect={false}
+                autoCapitalize="false"
+                autoComplete="false"
+                autoCorrect="false"
                 handleKeyCommand={this.onKeyCommand.bind(this)}
                 onChange={this.onChange}
                 placeholder="Post anything..."

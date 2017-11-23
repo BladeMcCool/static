@@ -123,6 +123,6 @@ export default class Header extends Component {
 
 Header.propTypes = {
   peerCount: PropTypes.number.isRequired,
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.string,
   name: PropTypes.string
 };

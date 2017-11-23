@@ -16,8 +16,8 @@ import ProfileCard from "./ProfileCard";
 
 import { IMAGE_TYPES, AUDIO_TYPES } from "./Editor/constants";
 
-// import IPFS from "ipfs";
-const node = new window.Ipfs({
+import IPFS from "ipfs";
+const node = new IPFS({
   EXPERIMENTAL: {
     pubsub: true,
     dht: true
