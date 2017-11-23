@@ -254,31 +254,18 @@ export default class App extends Component {
       return;
     }
 
-    node.files.cat(hash, (err, stream) => {
-      var res = "";
+    node.files.cat(hash, (err, file) => {
 
-      stream.on("data", chunk => {
-        res += chunk.toString();
-      });
-
-      stream.on("error", err => {
-        console.error("Error - ipfs files cat ", err);
-      });
-
-      stream.on("end", () => {
-        // Safety check -- Ignore posts we have seen
-        // This shouldn't have to be here
-        if (this.postByHash(hash).length) return;
-
-        let post;
-        try {
-          post = JSON.parse(res);
-        } catch (err) {
-          return console.error("Could not parse post", err);
-        }
-
+      // Safety check -- Ignore posts we have seen
+      // This shouldn't have to be here
+      if (this.postByHash(hash).length) return;
+      
+      try {
+        const post = JSON.parse(file.toString('utf8'));
         this.handlePost(post, hash);
-      });
+      } catch (err) {
+        return console.error("Could not parse post", err);
+      }
     });
   }
 
