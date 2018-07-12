@@ -5,7 +5,6 @@
   "dependencies": {
     "async-es": "^2.6.0",
     "draft-js": "^0.10.4",
-    "ipfs": "git+https://github.com/ipfs/js-ipfs.git",
     "markdown-to-jsx": "^5.4.2",
     "moment": "^2.19.2",
     "music-metadata": "^0.6.3",
